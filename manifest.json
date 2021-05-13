@@ -38,7 +38,7 @@
     "previous-tab": {
         "group":"Tab", "order": 5,
         "description": "Switch to Prior Tab (Suggestion: ⌘E)",
-        "icon": "tab_unselected" 
+        "icon": "swap_calls" 
       },
     "new-tab-right": {
       // "group":"Tab", "order": 4,
@@ -74,8 +74,13 @@
       "description": "Merge Windows",
       "icon": "padding"
     },
-    "discard-tabs": {
+    "remove-duplicates": {
       "group":"Window", "order": 2,
+      "description": "Close Duplicate Tabs",
+      "icon": "tab_unselected"
+    },
+    "discard-tabs": {
+      "group":"Window", "order": 3,
       "description": "Unload Background Tabs",
       "icon": "web_asset_off"
     },

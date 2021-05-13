@@ -93,7 +93,7 @@ function runCommand(e) {
         sendMessage(this);
       }
       el.classList.remove("highlight");
-      window.close();
+      if (!e.shiftKey) window.close();
     },150)
   },100)
 }
