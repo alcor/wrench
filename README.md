@@ -1,5 +1,5 @@
 _Treasured multi-tool,_  
-_the spanner in chrome's works_ —   
+_the spanner in Chrome's works_ —   
 _a missing menu._
 
 
