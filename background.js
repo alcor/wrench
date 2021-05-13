@@ -13,9 +13,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // Context Menu
 
-chrome.runtime.onStartup.addListener(createContextMenus);
 
 function createContextMenus() {
+  console.log("command")
   let manifest = chrome.runtime.getManifest();
   let commands = manifest.commands;
   for (let id in commands) {
@@ -23,17 +23,21 @@ function createContextMenus() {
     if (!c.description) continue;
     if (!c.contexts) continue;
     console.log(c)
+    let description = c.description
+    description = description.split(" (")[0];
     chrome.contextMenus.create({
-      title: c.description,
+      title: description,
       id: id,
       contexts: c.contexts
     });
   }
 }
 
+chrome.runtime.onInstalled.addListener(createContextMenus);
+chrome.runtime.onStartup.addListener(createContextMenus);
 
+let storage = chrome.storage.session || chrome.storage.local
 chrome.tabs.onActivated.addListener( async info => {
-  let storage = chrome.storage.session || chrome.storage.local
   storage.get('tabHistory', value => {
     value = value.tabHistory || []
     value.unshift(info);
@@ -51,10 +55,15 @@ let commandHandlers = {
     if (window.type == 'normal') {
       chrome.windows.create({
         tabId: tab.id,
+        left:window.left + 52, top:window.top + 52, width:window.width - 104 , height:window.height - 104,
         type: "popup"
       });
     } else {
-      chrome.tabs.move(target.id)
+      //TODO: record the window the tab came from originally 
+      window = (await chrome.windows.getAll({populate:false, windowTypes:['normal']}))[0]
+      await chrome.tabs.move(tab.id, {windowId:window.id, index:-1})
+      chrome.tabs.update(tab.id, { 'active': true });
+      chrome.windows.update(window.id, {"focused": true });
     }
   },
 
@@ -62,7 +71,7 @@ let commandHandlers = {
     if (!tab) tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
     chrome.scripting.executeScript({
       files: ['./src/inject_pictureInPicture.js'],
-      tab: {tabId:tab.id, allFrames:true}
+      target: {tabId:tab.id, allFrames:true}
     });
   },
 
@@ -71,11 +80,12 @@ let commandHandlers = {
     console.log("Run command:", tab)
     chrome.scripting.executeScript({
       files: ['./src/inject_copyLink.js'],
-      tab: {tabId:tab.id, allFrames:true}
+      target: {tabId:tab.id, allFrames:true}
     });
   },
 
   "new-tab-right": async () => {
+    // TODO: Reactivate last used tabbed window
     let tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
     console.log("target", tab);
     chrome.tabs.create({

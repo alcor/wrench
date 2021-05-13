@@ -19,7 +19,7 @@
     "pop-out-tab": { 
        "description": "Move Tab to Pop Up",
        "group":"Tab", "order": 1,
-       "icon": "open_in_new" , 
+       "icon": "open_in_browser" , 
        "suggested_key": { "default": "Alt+Shift+P" }, 
        "contexts":["page", "selection"]
       },
@@ -30,14 +30,14 @@
        "suggested_key": { "default": "Alt+P"}, 
        "contexts":["page", "selection"]},
     "copy-link": {
-       "description": "Copy Link w/ Title (Suggestion: ^⌘T)          ", 
+       "description": "Copy Link with Title (Suggestion: ^⌘T)          ", 
        "icon": "link",
        "group":"Tab", "order": 3,
        "contexts":["page", "selection"]
       },
     "previous-tab": {
         "group":"Tab", "order": 5,
-        "description": "Switch to Prior Tab (Suggestion: ⌘E)",
+        "description": "Switch to Last Active Tab (Suggestion: ⌘E)",
         "icon": "swap_calls" 
       },
     "new-tab-right": {
