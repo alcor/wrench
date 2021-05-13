@@ -115,7 +115,7 @@ function sendMessage(command) {
 async function pictureInPicture(target) {
   if (!target) target = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
   chrome.scripting.executeScript({
-    files: ['./js/pictureInPicture.js'],
+    files: ['./src/inject_pictureInPicture.js'],
     target: {tabId:target.id, allFrames:true}
   });
 }

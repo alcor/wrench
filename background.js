@@ -44,38 +44,44 @@ chrome.tabs.onActivated.addListener( async info => {
 // Commands
 
 let commandHandlers = {
-  "pop-out-tab": async (target) => {
-    if (!target) target = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
-    chrome.windows.create({
-      tabId: target.id,
-      type: "popup"
-    });
+  "pop-out-tab": async (tab) => {
+    if (!tab) tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
+    let window = await chrome.windows.get(tab.windowId)
+    console.log("target", tab, window)
+    if (window.type == 'normal') {
+      chrome.windows.create({
+        tabId: tab.id,
+        type: "popup"
+      });
+    } else {
+      chrome.tabs.move(target.id)
+    }
   },
 
-  "pic-in-pic": async (target) => {
-    if (!target) target = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
+  "pic-in-pic": async (tab) => {
+    if (!tab) tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
     chrome.scripting.executeScript({
       files: ['./src/inject_pictureInPicture.js'],
-      target: {tabId:target.id, allFrames:true}
+      tab: {tabId:tab.id, allFrames:true}
     });
   },
 
-  "copy-link": async (target) => {
-    if (!target) target = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
-    console.log("Run command:", target)
+  "copy-link": async (tab) => {
+    if (!tab) tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
+    console.log("Run command:", tab)
     chrome.scripting.executeScript({
       files: ['./src/inject_copyLink.js'],
-      target: {tabId:target.id, allFrames:true}
+      tab: {tabId:tab.id, allFrames:true}
     });
   },
 
   "new-tab-right": async () => {
-    let target = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
-    console.log("target", target);
+    let tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
+    console.log("target", tab);
     chrome.tabs.create({
-      index: target.index + 1
+      index: tab.index + 1
     }).then((tab) => {
-      if (target.groupId > 0) chrome.tabs.group({groupId: target.groupId, tabIds: tab.id})
+      if (tab.groupId > 0) chrome.tabs.group({groupId: tab.groupId, tabIds: tab.id})
     });
   },
 
