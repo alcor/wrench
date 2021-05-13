@@ -24,9 +24,9 @@
        "contexts":["page", "selection"]
       },
     "pic-in-pic": {
-       "description": "Picture in picture",
+       "description": "Play in Picture in Picture",
        "group":"Tab", "order": 2,
-       "icon": "picture_in_picture" , 
+       "icon": "picture_in_picture_alt" , 
        "suggested_key": { "default": "Alt+P"}, 
        "contexts":["page", "selection"]},
     "copy-link": {
