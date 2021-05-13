@@ -1,21 +1,23 @@
 {
   "name": "The Wrench Menu",
   "short_name": "The Wrench Menu",
-  "description": "Deceptive, simple —\n a spanner for Chrome's works —\n perhaps will suffice",
+  "description": "Treasured multi-tool,
+  the spanner in chrome's works— 
+  a missing menu.         ",
   "version": "1.0",
   "icons": {
-    "128": "img/wrench.png",
-    "32": "img/wrench.png"
+    "128": "rsrc/wrench.png",
+    "32": "rsrc/wrench.png"
   },
   "background": { "service_worker": "background.js" },
   "action": {
-    "default_icon": "img/wrench.png",
+    "default_icon": "rsrc/wrench.png",
     "default_title": "The Wrench",
-    "default_popup": "menu.html"
+    "default_popup": "src/menu.html"
   },
   "commands": {
     "pop-out-tab": { 
-       "description": "Pop out tab",
+       "description": "Move Tab to Pop Up",
        "group":"Tab", "order": 1,
        "icon": "open_in_new" , 
        "suggested_key": { "default": "Alt+Shift+P" }, 
@@ -77,12 +79,11 @@
       "description": "Unload Background Tabs",
       "icon": "web_asset_off"
     },
-
     "pin-tab": {
       "description": "Pin Tab"
     },
 
-    "_execute_action": { "suggested_key": { "default": "Ctrl+Shift+W", "mac": "Command+Shift+W"}}
+    "_execute_action": {"description": "Open Wrench Menu", "suggested_key": { "default": "Ctrl+Shift+W", "mac": "Command+Shift+W"}}
   },
   "permissions": [ "scripting", "tabs", "activeTab", "tabGroups", "storage", "bookmarks", "contextMenus" ],
   "manifest_version": 3
