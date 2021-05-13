@@ -1,0 +1,112 @@
+* {
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+body {
+  margin:0;
+  background-color: var(--surface-color);
+  color:var(--text-color);
+}
+
+.menu {
+  padding: 8px 0;
+  min-width: 280px;
+  font-size:13px;
+
+}
+
+.button .menu {
+  max-width: 50%;
+  right: 8px;
+  top: 50px;
+}
+
+.menu .item {
+  width:auto;
+  text-align:left;
+  cursor:default;
+  padding:0 16px 0 24px;
+}
+
+.menu .item .icon {
+  margin-right:14px;
+  font-size:18px;
+  line-height:28px;
+  opacity:0.7;
+  vertical-align: bottom;
+}
+
+.menu .header {
+  opacity:0.5;
+  padding-left:24px;
+}
+
+.menu .item .title {
+  line-height:28px;
+}
+
+.shortcut {
+  float:right;
+  opacity:0.33;
+}
+
+.item:not(:hover) .shortcut.placeholder {
+  opacity:0.0;
+}
+
+.item:hover .shortcut {
+  opacity:1.0;
+}
+
+.menu > div {
+  text-overflow: ellipsis;
+  height:28px;
+  line-height:28px;
+}
+
+.menu > div.disabled {
+  text-decoration: line-through;
+  pointer-events: none;
+}
+
+.menu > div.true:before {
+  content: '✓';
+  color: var(--text-color);
+  display: block;
+  float: left;
+  margin-left: -12px;
+}
+
+.menu .item:not(.nohighlight):hover,
+.menu .item.highlight {
+  background-color: var(--item-highlighted-color);
+  color: var(--text-color);
+}
+
+div.button:hover .menu,
+.menu.visible {
+  display: block;
+}
+
+hr {
+  border: none;
+  border-bottom: 1px solid var(--surface-stroke-color);
+  margin-block-start: 4px;
+  margin-block-end: 4px;
+}
+
+* {
+  --surface-color: #white;
+  --surface-stroke-color: rgba(0,0,0,0.1);
+  --text-color: black;
+  --item-highlighted-color: #C8C8C9;
+}
+
+@media (prefers-color-scheme: dark) {
+	* {
+	  --surface-color: #292A2D;
+    --surface-stroke-color: rgba(255,255,255,0.2);
+	  --text-color: white;
+    --item-highlighted-color: #4B4C4F;
+	}
+}

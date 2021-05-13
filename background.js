@@ -1,0 +1,199 @@
+chrome.commands.onCommand.addListener(runCommand);
+
+chrome.contextMenus.onClicked.addListener((data, tab) =>  {
+  runCommand(data.menuItemId, tab)
+})
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  runCommand(message.command.name)
+  sendResponse();
+});
+
+
+
+// Context Menu
+
+chrome.runtime.onStartup.addListener(createContextMenus);
+
+function createContextMenus() {
+  let manifest = chrome.runtime.getManifest();
+  let commands = manifest.commands;
+  for (let id in commands) {
+    let c = commands[id];
+    if (!c.description) continue;
+    if (!c.contexts) continue;
+    console.log(c)
+    chrome.contextMenus.create({
+      title: c.description,
+      id: id,
+      contexts: c.contexts
+    });
+  }
+}
+
+
+chrome.tabs.onActivated.addListener( async info => {
+  let storage = chrome.storage.session || chrome.storage.local
+  storage.get('tabHistory', value => {
+    value = value.tabHistory || []
+    value.unshift(info);
+    storage.set({'tabHistory':value.slice(0, 10)})
+  })
+});
+
+
+
+// Commands
+
+
+
+
+// function restoreGroup(args, sender, sendResponse) {
+//   let url = new URL(sender.url);
+//   let id = url.hash.substr(1);
+//   let params = new URLSearchParams(url.search);
+//   if (params) {
+//     restoreGroupWithBookmark(params)
+//   }
+// }
+
+// function restoreGroupWithBookmark(params) { 
+//   let id = params.get('id');
+//   let color = params.get('color');
+//   let urls = JSON.parse(params.get('urls'));
+//   let title = params.get('title');
+
+//   return chrome.tabGroups.query({title: title, color:color})
+//   .then (groups => {
+//     let promises = [];
+//     urls.forEach((url,i) => {
+//       let promise = chrome.tabs.create({url: url, selected:false, active:false})
+//       //if (i > 0) promise = promise.then(tab => chrome.tabs.discard(tab.id))
+//       promises.push(promise)
+//     })
+//     Promise.all(promises)
+//     .then (tabs => {
+//       return chrome.tabs.group({tabIds:tabs.map(t => t.id), createProperties:{}})
+//       .then((gid) => {
+//         chrome.tabs.update(tabs[0].id, { 'active': true });
+//         chrome.tabGroups.update(gid, {title:title, color:color})
+//       })
+//     }); 
+//   })
+// }
+
+
+
+
+
+
+let commandHandlers = {
+  "pop-out-tab": async (target) => {
+    if (!target) target = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
+    chrome.windows.create({
+      tabId: target.id,
+      type: "popup"
+    });
+  },
+  "pic-in-pic": async (target) => {
+    if (!target) target = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
+    chrome.scripting.executeScript({
+      files: ['./js/pictureInPicture.js'],
+      target: {tabId:target.id, allFrames:true}
+    });
+  },
+  "copy-link": async (target) => {
+    if (!target) target = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
+    console.log("Run command:", target)
+    chrome.scripting.executeScript({
+      files: ['./js/copyLink.js'],
+      target: {tabId:target.id, allFrames:true}
+    });
+  },
+  "new-tab-right": async () => {
+    let target = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
+    console.log("target", target);
+    chrome.tabs.create({
+      index: target.index + 1
+    }).then((tab) => {
+      if (target.groupId > 0) chrome.tabs.group({groupId: target.groupId, tabIds: tab.id})
+    });
+  },
+  "remove-duplicates": removeDuplicates,
+  "previous-tab": () => {
+    let storage = chrome.storage.session || chrome.storage.local
+    storage.get('tabHistory', value => {
+      if (value.tabHistory) {
+        let info = value.tabHistory[1];
+        chrome.tabs.update(info.tabId, { 'active': true });
+        chrome.windows.update(info.windowId, { "focused": true });
+      }
+    })  
+  },
+  "merge-windows": mergeWindows,
+  "discard-tabs": async () => {
+    let windows = await chrome.windows.getAll({populate:true, windowTypes:['normal']});
+    windows.forEach(w => {
+      w.tabs.forEach(tab => {
+        if (!tab.active && !tab.discarded) chrome.tabs.discard(tab.id)
+      })  
+    })
+  }
+}
+
+function runCommand(command, target) {
+  console.log("Run command:", command)
+  if (commandHandlers[command]) {
+    commandHandlers[command](target)
+  } else {
+    console.error("handler not found", command.name)
+  }
+}
+
+
+
+function removeDuplicates() {
+  chrome.windows.getAll({populate:true, windowTypes:['normal']})
+  .then((windows) => {
+    var idsToRemove = []
+    var knownURLs = {};
+    windows.forEach(w => {
+      w.tabs.forEach((tab) => {
+        if (!knownURLs[tab.url]) {
+          knownURLs[tab.url] = tab.id;
+        } else {
+          idsToRemove.push(tab.id)         
+        }
+      })
+      chrome.tabs.remove(idsToRemove);
+    })
+  })
+}
+
+
+function sortWindows(w1,w2) {
+  let i, j;
+  for (i = 0; i < w1.tabs.length; i++) { if (!w1.tabs[i] || !w1.tabs[i].pinned) break; }
+  for (j = 0; j < w1.tabs.length; j++) { if (!w2.tabs[j] || !w2.tabs[j].pinned) break; } 
+  if (j - i == 0) return w2.tabs.length - w1.tabs.length;
+  return j - i;
+}
+
+async function mergeWindows() {
+  let windows = await chrome.windows.getAll({populate:true, windowTypes:['normal']});
+  windows.sort(sortWindows);
+  let firstWindow = windows.shift();
+  let movedGroups = [];
+  windows.forEach(w => {
+    w.tabs.forEach(tab => {
+      if (tab.groupId > 0 && !movedGroups.includes(tab.groupId)) {
+        chrome.tabGroups.move(tab.id,{windowId:firstWindow.id, index:-1})
+        movedGroups.push(tab.groupId);
+      } else {
+        chrome.tabs.move(tab.id, {windowId:firstWindow.id, index:-1}).then(() => {
+          if (tab.pinned) chrome.tabs.update(tab.id, { pinned: true }) 
+        });
+      }
+    })  
+  })
+}

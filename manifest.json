@@ -1,0 +1,89 @@
+{
+  "name": "The Wrench Menu",
+  "short_name": "The Wrench Menu",
+  "description": "Deceptive, simple —\n a spanner for Chrome's works —\n perhaps will suffice",
+  "version": "1.0",
+  "icons": {
+    "128": "img/wrench.png",
+    "32": "img/wrench.png"
+  },
+  "background": { "service_worker": "background.js" },
+  "action": {
+    "default_icon": "img/wrench.png",
+    "default_title": "The Wrench",
+    "default_popup": "menu.html"
+  },
+  "commands": {
+    "pop-out-tab": { 
+       "description": "Pop out tab",
+       "group":"Tab", "order": 1,
+       "icon": "open_in_new" , 
+       "suggested_key": { "default": "Alt+Shift+P" }, 
+       "contexts":["page", "selection"]
+      },
+    "pic-in-pic": {
+       "description": "Picture in picture",
+       "group":"Tab", "order": 2,
+       "icon": "picture_in_picture" , 
+       "suggested_key": { "default": "Alt+P"}, 
+       "contexts":["page", "selection"]},
+    "copy-link": {
+       "description": "Copy Link w/ Title (Suggestion: ^⌘T)          ", 
+       "icon": "link",
+       "group":"Tab", "order": 3,
+       "contexts":["page", "selection"]
+      },
+    "previous-tab": {
+        "group":"Tab", "order": 5,
+        "description": "Switch to Prior Tab (Suggestion: ⌘E)",
+        "icon": "tab_unselected" 
+      },
+    "new-tab-right": {
+      // "group":"Tab", "order": 4,
+       "description": "New Tab to the Right (Suggestion: ⌘T)",
+       "icon": "add_circle_outline"
+      },
+
+    // "archive-group": {
+    //     "description": "Archive Group",
+    //     "group":"Tab Group", "order": 1,
+    //     "icon": "save_alt",
+    //     "alt-contexts":["group"]   
+    //   },
+    // "restore-group": {
+    //   "description": "Restore Group",
+    //   "submenu": "groups",
+    //   "group":"Tab Group", "order": 2,
+    //    "icon": "folder_open"
+    //   },
+    // "group-related": {
+    //   "description": "Group Related Tabs",
+    //   "group":"Tab Group", "order": 3,
+    //    "icon": "sort"
+    //   },
+        // "group-by-domain": {
+    //   "description": "Group Tabs by Domain",
+    //   "group":"Tab Group", "order": 3,
+    //    "icon": "sort"
+    //   },
+
+    "merge-windows": {
+      "group":"Window", "order": 1,
+      "description": "Merge Windows",
+      "icon": "padding"
+    },
+    "discard-tabs": {
+      "group":"Window", "order": 2,
+      "description": "Unload Background Tabs",
+      "icon": "web_asset_off"
+    },
+
+    "pin-tab": {
+      "description": "Pin Tab"
+    },
+
+    "_execute_action": { "suggested_key": { "default": "Ctrl+Shift+W", "mac": "Command+Shift+W"}}
+  },
+  "permissions": [ "scripting", "tabs", "activeTab", "tabGroups", "storage", "bookmarks", "contextMenus" ],
+  "manifest_version": 3
+}
