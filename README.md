@@ -4,4 +4,3 @@
 - Turn on Developer mode
 - Drag the root directory of this repository in.
 - Pin the toolbar button
-- Open it and pop out the window
