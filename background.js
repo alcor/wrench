@@ -5,7 +5,7 @@ chrome.contextMenus.onClicked.addListener((data, tab) =>  {
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  runCommand(message.command.name)
+  runCommand(message.command.name, message.tab)
   sendResponse();
 });
 
@@ -14,15 +14,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // Context Menu
 
 
-function createContextMenus() {
-  console.log("command")
+//
+function setup() {
+
+
   let manifest = chrome.runtime.getManifest();
   let commands = manifest.commands;
   for (let id in commands) {
     let c = commands[id];
     if (!c.description) continue;
     if (!c.contexts) continue;
-    console.log(c)
     let description = c.description
     description = description.split(" (")[0];
     chrome.contextMenus.create({
@@ -31,10 +32,23 @@ function createContextMenus() {
       contexts: c.contexts
     });
   }
+
+  restoreIcon();
 }
 
-chrome.runtime.onInstalled.addListener(createContextMenus);
-chrome.runtime.onStartup.addListener(createContextMenus);
+function showSuccess() {
+  chrome.action.setIcon({path: 'rsrc/checkmark_32.png'});
+  setTimeout(restoreIcon, 1000);
+}
+function restoreIcon() {
+  chrome.storage.local.get('darkmode', (value) => {
+    chrome.action.setIcon({path: `rsrc/wrench${value.darkmode ? "-light" : ""}_32.png`})
+  })
+}
+
+
+chrome.runtime.onInstalled.addListener(setup);
+chrome.runtime.onStartup.addListener(setup);
 
 let storage = chrome.storage.session || chrome.storage.local
 chrome.tabs.onActivated.addListener( async info => {
@@ -49,9 +63,8 @@ chrome.tabs.onActivated.addListener( async info => {
 
 let commandHandlers = {
   "pop-out-tab": async (tab) => {
-    if (!tab) tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
     let window = await chrome.windows.get(tab.windowId)
-    console.log("target", tab, window)
+    console.log("Pop out", tab, window)
     if (window.type == 'normal') {
       chrome.windows.create({
         tabId: tab.id,
@@ -68,26 +81,23 @@ let commandHandlers = {
   },
 
   "pic-in-pic": async (tab) => {
-    if (!tab) tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
     chrome.scripting.executeScript({
       files: ['./src/inject_pictureInPicture.js'],
       target: {tabId:tab.id, allFrames:true}
     });
+    showSuccess();
   },
 
   "copy-link": async (tab) => {
-    if (!tab) tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
-    console.log("Run command:", tab)
     chrome.scripting.executeScript({
       files: ['./src/inject_copyLink.js'],
       target: {tabId:tab.id, allFrames:true}
     });
+    showSuccess();
   },
 
-  "new-tab-right": async () => {
+  "new-tab-right": async (tab) => {
     // TODO: Reactivate last used tabbed window
-    let tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
-    console.log("target", tab);
     chrome.tabs.create({
       index: tab.index + 1
     }).then((tab) => {
@@ -95,7 +105,7 @@ let commandHandlers = {
     });
   },
 
-  "remove-duplicates": function removeDuplicates() {
+  "remove-duplicates": function removeDuplicates(tab) {
     chrome.windows.getAll({populate:true, windowTypes:['normal']})
     .then((windows) => {
       var idsToRemove = []
@@ -111,6 +121,7 @@ let commandHandlers = {
         chrome.tabs.remove(idsToRemove);
       })
     })
+    showSuccess();
   },
 
   "previous-tab": () => {
@@ -141,6 +152,7 @@ let commandHandlers = {
         }
       })  
     })
+    showSuccess();
   },
 
   "discard-tabs": async () => {
@@ -153,16 +165,15 @@ let commandHandlers = {
   }
 }
 
-function runCommand(command, target) {
-  console.log("Run command:", command)
+async function runCommand(command, tab) {
   if (commandHandlers[command]) {
-    commandHandlers[command](target)
+    if (!tab) tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
+    console.log("Run command:", command, tab)
+    commandHandlers[command](tab)
   } else {
-    console.error("handler not found", command.name)
+    console.error("Command unknown:", command.name)
   }
 }
-
-
 
 function sortWindows(w1,w2) {
   let i, j;

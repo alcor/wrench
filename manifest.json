@@ -8,7 +8,7 @@
   "version": "1.0",
   "icons": {
     "128": "rsrc/wrench.png",
-    "32": "rsrc/wrench.png"
+    "32": "rsrc/wrench_32.png"
   },
   "background": { "service_worker": "background.js" },
   "action": {

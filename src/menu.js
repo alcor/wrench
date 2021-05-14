@@ -3,6 +3,15 @@ let commands = manifest.commands;
 let commandsArray = [];
 loadCommands();
 
+let darkmode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+chrome.storage.local.set({darkmode})
+
+if (darkmode) {
+  chrome.action.setIcon({path: {32:'../rsrc/wrench-light_32.png'}});
+} else {
+  chrome.action.setIcon({path: {32:'../rsrc/wrench_32.png'}});
+}
+
 function loadCommands() {
 
   for (let cmd in commands) {
@@ -27,6 +36,13 @@ function loadCommands() {
   })
 }
 
+let focusedTab;
+chrome.tabs.query({ active: true, currentWindow: true }).then ( tabs => {
+  focusedTab = tabs[0]
+  console.log("focused tab", focusedTab);
+});
+
+
 document.addEventListener('DOMContentLoaded', function() {
   var root = document.body;
   m.mount(root, Menu);
@@ -34,7 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 function openShortcutsUI() {
-  chrome.tabs.create({ url: "chrome://extensions/shortcuts#:~:text=" + encodeURIComponent(this)});
+  alert("chrome://extensions/shortcuts#:~:text=" + encodeURIComponent(this))
+  chrome.tabs.create({ url: "chrome://extensions/shortcuts#:~:text=wrench"});
 }
 
 var MenuItem = function(vnode) {
@@ -85,13 +102,13 @@ function runCommand(e) {
   setTimeout(() => {
     el.classList.remove("nohighlight");
     el.classList.add("highlight");
+    console.log("Run command:", this.name)
+    if (commandHandlers[this.name]) {
+      commandHandlers[this.name]()
+    } else {
+      sendMessage(this);
+    }
     setTimeout(() => {
-      console.log("run command", this.name)
-      if (commandHandlers[this.name]) {
-        commandHandlers[this.name]()
-      } else {
-        sendMessage(this);
-      }
       el.classList.remove("highlight");
       if (!e.shiftKey) window.close();
     },150)
@@ -105,7 +122,7 @@ let commandHandlers = {
 
 function sendMessage(command) {
   console.log("args", {command})
-  chrome.runtime.sendMessage({command}, (response) => {
+  chrome.runtime.sendMessage({command, tab:focusedTab}, (response) => {
     console.log('received response', response);
   });
 }
