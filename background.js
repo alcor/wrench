@@ -13,11 +13,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // Context Menu
 
-
-//
 function setup() {
-
-
   let manifest = chrome.runtime.getManifest();
   let commands = manifest.commands;
   for (let id in commands) {

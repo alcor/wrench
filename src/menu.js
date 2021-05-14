@@ -50,8 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 function openShortcutsUI() {
-  alert("chrome://extensions/shortcuts#:~:text=" + encodeURIComponent(this))
-  chrome.tabs.create({ url: "chrome://extensions/shortcuts#:~:text=wrench"});
+  chrome.tabs.create({ url: "chrome://extensions/shortcuts#:~:text=" + encodeURIComponent(this)});
 }
 
 var MenuItem = function(vnode) {
