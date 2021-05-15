@@ -46,28 +46,28 @@
        "icon": "add_circle_outline"
       },
 
-    "archive-group": {
-        "description": "Save Group",
-        "group":"Tab Group", "order": 1,
-        "icon": "save_alt",
-        "alt-contexts":["group"]   
-      },
+    // "archive-group": {
+    //     "description": "Save Group",
+    //     "group":"Tab Group", "order": 1,
+    //     "icon": "save_alt",
+    //     "alt-contexts":["group"]   
+    //   },
     // "restore-group": {
     //   "description": "Restore Group",
     //   "submenu": "groups",
     //   "group":"Tab Group", "order": 2,
     //    "icon": "folder_open"
     //   },
-    "group-related": {
-      "description": "Group Tabs",
-      "group":"Tab Group", "order": 3,
-       "icon": "layer"
-      },
-    "group-by-domain": {
-      "description": "Group Tabs by Domain",
-      "group":"Tab Group", "order": 4,
-       "icon": "sort"
-      },
+    // "group-related": {
+    //   "description": "Group Tabs",
+    //   "group":"Tab Group", "order": 3,
+    //    "icon": "layer"
+    //   },
+    // "group-by-domain": {
+    //   "description": "Group Tabs by Domain",
+    //   "group":"Tab Group", "order": 4,
+    //    "icon": "sort"
+    //   },
 
     "merge-windows": {
       "group":"Window", "order": 1,
