@@ -58,7 +58,7 @@ var MenuItem = function(vnode) {
     view: function(vnode) {
       let item = vnode.attrs;
       let attrs = {onclick:runCommand.bind(item)}
-      let title = item.description || item.title;
+      let title = item.description ?? item.title;
       if (item.type == 'separator') return m('hr')
       if (item.type == 'header') return m('div.header', item.description);
       if (!item.description) return;

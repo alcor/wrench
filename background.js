@@ -114,7 +114,7 @@ let commandHandlers = {
             idsToRemove.push(tab.id)         
           }
         })
-        chrome.tabs.remove(idsToRemove);
+        chrome.tabs.remove(idsToRemove.reverse());
       })
     })
     showSuccess();
