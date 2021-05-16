@@ -84,12 +84,12 @@
       "description": "Unload Background Tabs",
       "icon": "web_asset_off"
     },
-    "pin-tab": {
-      "description": "Pin Tab"
-    },
+    "pin-tab": { "description": "Pin Tab" },
+    "close-downloads": { "description": "Close Downloads Bar" },
 
     "_execute_action": {"suggested_key": { "default": "Ctrl+Shift+W", "mac": "Command+Shift+W"}}
   },
-  "permissions": [ "scripting", "tabs", "activeTab", "tabGroups", "storage", "bookmarks", "contextMenus" ],
+  "permissions":[ "scripting", "tabs", "activeTab", "tabGroups", "storage", "bookmarks", "contextMenus" ],
+  "optional_permissions": ["downloads", "downloads.shelf"],
   "manifest_version": 3
 }

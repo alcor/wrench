@@ -92,6 +92,15 @@ let commandHandlers = {
     showSuccess();
   },
 
+  "close-downloads": () => {
+    chrome.permissions.request({permissions: ['downloads', 'downloads.shelf']}, function(granted) {
+      if (granted) {
+        chrome.downloads.setShelfEnabled(false);
+        chrome.downloads.setShelfEnabled(true);
+      }
+    });
+  },
+
   "new-tab-right": async (tab) => {
     // TODO: Reactivate last used tabbed window
     chrome.tabs.create({
