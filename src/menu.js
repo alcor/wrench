@@ -36,17 +36,18 @@ function loadCommands() {
   })
 }
 
-let focusedTab;
-chrome.tabs.query({ active: true, currentWindow: true }).then ( tabs => {
-  focusedTab = tabs[0]
-  console.log("focused tab", focusedTab);
-});
 
-
+let focusedTabs;
 document.addEventListener('DOMContentLoaded', function() {
-  var root = document.body;
-  m.mount(root, Menu);
+  chrome.tabs.query({ highlighted: true, currentWindow: true }).then ( tabs => {
+    focusedTabs = tabs
+    console.log("Rendering menu for", tabs);
+    var root = document.body;
+    m.mount(root, Menu);
+  });
+  
 })
+
 
 
 function openShortcutsUI() {
@@ -83,7 +84,11 @@ var Menu = function(vnode) {
           if (lastGroup != attrs.group) {
             if (lastGroup) menuItems.push(m(MenuItem, {type:"separator", description:lastGroup}))
             lastGroup = attrs.group
-            menuItems.push(m(MenuItem, {type:"header", description:lastGroup}))
+            let header = lastGroup;
+            if (header == "Tab") {
+              if (focusedTabs.length > 1) header = focusedTabs.length + " Tabs"
+            }
+            menuItems.push(m(MenuItem, {type:"header", description:header}))
           }
           menuItems.push(m(MenuItem, attrs))
         }
