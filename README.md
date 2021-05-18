@@ -36,7 +36,7 @@ Window
 - Close Duplicate Tabs  
 - Unload Background Tabs
 
-## Additional Shortcu 
+## Additional Shortcuts
 These don't show in the menu, but you can set shortcuts for them. 
 - Pin Tab
 - New Tab to the Right
