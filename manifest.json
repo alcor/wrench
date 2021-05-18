@@ -1,10 +1,7 @@
 {
   "name": "The Wrench Menu",
   "short_name": "The Wrench Menu",
-  "description": "
-  Treasured multi-tool,
-  a spanner in Chrome's works–
-  the missing menu.        ",
+  "description": "Treasured multi-tool – a spanner in Chrome's works – the missing menu.        ",
   "version": "1.0",
   "icons": {
     "128": "rsrc/wrench.png",

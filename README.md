@@ -1,4 +1,4 @@
-_Treasured multi-tool,_  
+_Treasured multi-tool_ —  
 _a spanner in Chrome's works_ —   
 _the missing menu._
 
