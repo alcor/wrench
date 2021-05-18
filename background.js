@@ -58,7 +58,7 @@ chrome.tabs.onActivated.addListener( async info => {
 // Commands
 
 let commandHandlers = {
-  "pop-out-tab": async (tab) => {
+  "02-pop-out-tab": async (tab) => {
     let window = await chrome.windows.get(tab.windowId)
     console.log("Pop out", tab, window)
     if (window.type == 'normal') {
@@ -76,7 +76,8 @@ let commandHandlers = {
     }
   },
 
-  "pic-in-pic": async (tab) => {
+  
+  "03-pic-in-pic": async (tab) => {
     chrome.scripting.executeScript({
       files: ['./src/inject_pictureInPicture.js'],
       target: {tabId:tab.id, allFrames:true}
@@ -84,7 +85,7 @@ let commandHandlers = {
     showSuccess();
   },
 
-  "copy-link": async (tab) => {
+  "20-copy-link": async (tab) => {
     chrome.scripting.executeScript({
       files: ['./src/inject_copyLink.js'],
       target: {tabId:tab.id, allFrames:true}
@@ -92,16 +93,17 @@ let commandHandlers = {
     showSuccess();
   },
 
-  "close-downloads": () => {
+  "90-close-downloads": () => {
     chrome.permissions.request({permissions: ['downloads', 'downloads.shelf']}, function(granted) {
       if (granted) {
         chrome.downloads.setShelfEnabled(false);
         chrome.downloads.setShelfEnabled(true);
       }
     });
+    showSuccess();
   },
 
-  "new-tab-right": async (tab) => {
+  "13-new-tab-right": async (tab) => {
     // TODO: Reactivate last used tabbed window
     chrome.tabs.create({
       index: tab.index + 1
@@ -110,7 +112,7 @@ let commandHandlers = {
     });
   },
 
-  "remove-duplicates": function removeDuplicates(tab) {
+  "53-remove-duplicates": function removeDuplicates(tab) {
     chrome.windows.getAll({populate:true, windowTypes:['normal']})
     .then((windows) => {
       var idsToRemove = []
@@ -129,7 +131,7 @@ let commandHandlers = {
     showSuccess();
   },
 
-  "previous-tab": () => {
+  "12-previous-tab": () => {
     let storage = chrome.storage.session || chrome.storage.local
     storage.get('tabHistory', value => {
       if (value.tabHistory) {
@@ -140,7 +142,7 @@ let commandHandlers = {
     })  
   },
 
-  "merge-windows": async function mergeWindows() {
+  "51-merge-windows": async function mergeWindows() {
     let windows = await chrome.windows.getAll({populate:true, windowTypes:['normal']});
     windows.sort(sortWindows);
     let firstWindow = windows.shift();
@@ -160,13 +162,14 @@ let commandHandlers = {
     showSuccess();
   },
 
-  "discard-tabs": async () => {
+  "55-discard-tabs": async () => {
     let windows = await chrome.windows.getAll({populate:true, windowTypes:['normal']});
     windows.forEach(w => {
       w.tabs.forEach(tab => {
         if (!tab.active && !tab.discarded) chrome.tabs.discard(tab.id)
       })  
     })
+    showSuccess();
   }
 }
 

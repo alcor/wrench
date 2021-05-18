@@ -125,10 +125,7 @@ let commandHandlers = {
 }
 
 function sendMessage(command) {
-  console.log("args", {command})
-  chrome.runtime.sendMessage({command, tab:focusedTab}, (response) => {
-    console.log('received response', response);
-  });
+  return chrome.runtime.sendMessage({command, tabs:focusedTabs});
 }
 
 // Commands

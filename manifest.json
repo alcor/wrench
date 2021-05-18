@@ -1,9 +1,10 @@
 {
   "name": "The Wrench Menu",
   "short_name": "The Wrench Menu",
-  "description": "Treasured multi-tool,
-  the spanner in Chrome's works— 
-  a missing menu.         ",
+  "description": "
+  Treasured multi-tool,
+  a spanner in Chrome's works–
+  the missing menu.        ",
   "version": "1.0",
   "icons": {
     "128": "rsrc/wrench.png",
@@ -16,80 +17,57 @@
     "default_popup": "src/menu.html"
   },
   "commands": {
-    "pop-out-tab": { 
-       "description": "Pop Out Tab",
+    "01-pin-tab": { "description": "Pin Tab            (⌘⇧P)                    " },
+    "02-pop-out-tab": { 
+       "description": "Pop Out Tab (⌥⇧P)                    ",
        "group":"Tab", "order": 1,
        "icon": "open_in_new" , 
        "suggested_key": { "default": "Alt+Shift+P" }, 
-       "contexts":["page", "selection"]
+       "contexts":["page", "selection"],
+       "enabled": ["tab"]
       },
-    "pic-in-pic": {
-       "description": "Pop Out Video",
+    "03-pic-in-pic": {
+       "description": "Pop Out Video (⌥P)                    ",
        "group":"Tab", "order": 2,
        "icon": "picture_in_picture_alt" , 
        "suggested_key": { "default": "Alt+P"}, 
        "contexts":["page", "selection"]},
-    "copy-link": {
-       "description": "Copy Link with Title (Suggestion: ^⌘T)          ", 
+    "20-copy-link": {
+       "description": "Copy Link with Title (⌥⇧C)                    ", 
        "icon": "link",
        "group":"Tab", "order": 3,
        "contexts":["page", "selection"]
       },
-    "previous-tab": {
-        "group":"Tab", "order": 5,
-        "description": "Switch to Prior Tab (Suggestion: ⌘E)",
+    "12-previous-tab": {
+        "group":"Tab", "order": 4,
+        "description": "Switch to Prior Tab (⌘E)                    ",
         "icon": "swap_calls" 
       },
-    "new-tab-right": {
-      // "group":"Tab", "order": 4,
-       "description": "New Tab to the Right (Try: ⌘T)",
+    "13-new-tab-right": {
+      "group":"Tab", "order": 5,
+       "description": "New Tab After This One (⌘T)                    ",
        "icon": "add_circle_outline"
       },
-
-    // "archive-group": {
-    //     "description": "Save Group",
-    //     "group":"Tab Group", "order": 1,
-    //     "icon": "save_alt",
-    //     "alt-contexts":["group"]   
-    //   },
-    // "restore-group": {
-    //   "description": "Restore Group",
-    //   "submenu": "groups",
-    //   "group":"Tab Group", "order": 2,
-    //    "icon": "folder_open"
-    //   },
-    // "group-related": {
-    //   "description": "Group Tabs",
-    //   "group":"Tab Group", "order": 3,
-    //    "icon": "layer"
-    //   },
-    // "group-by-domain": {
-    //   "description": "Group Tabs by Domain",
-    //   "group":"Tab Group", "order": 4,
-    //    "icon": "sort"
-    //   },
-
-    "merge-windows": {
+    "51-merge-windows": {
       "group":"Window", "order": 1,
-      "description": "Merge Windows",
+      "description": "Merge Windows (⌘⇧M)                    ",
       "icon": "padding"
     },
-    "remove-duplicates": {
+    "53-remove-duplicates": {
       "group":"Window", "order": 2,
-      "description": "Close Duplicate Tabs",
+      "description": "Close Duplicate Tabs (⌘⇧W)                    ",
       "icon": "tab_unselected"
     },
-    "discard-tabs": {
+    "55-discard-tabs": {
       "group":"Window", "order": 3,
-      "description": "Unload Background Tabs",
+      "description": "Unload Background Tabs (⌘⇧U)                    ",
       "icon": "web_asset_off"
     },
-    "pin-tab": { "description": "Pin Tab" },
-    "close-downloads": { "description": "Close Downloads Bar" },
+    "90-close-downloads": { "description": "Close Downloads Bar (⌘⇧D)                    " },
 
-    "_execute_action": {"suggested_key": { "default": "Ctrl+Shift+W", "mac": "Command+Shift+W"}}
+    "_execute_action": {"description": "Test", "suggested_key": { "default": "Alt+W", "mac": "Alt+W"}}
   },
-  "permissions":[ "scripting", "tabs", "activeTab", "tabGroups", "storage", "bookmarks", "contextMenus" ],
+  "permissions":[ "scripting", "tabs", "activeTab", "tabGroups", "storage", "contextMenus" ],
   "optional_permissions": ["downloads", "downloads.shelf"],
   "manifest_version": 3
 }
