@@ -58,6 +58,9 @@ chrome.tabs.onActivated.addListener( async info => {
 // Commands
 
 let commandHandlers = {
+  "01-pin-tab": async (tab) => {
+    chrome.tabs.update(tab.id, { 'pinned': !tab.pinned });
+  },
   "02-pop-out-tab": async (tab) => {
     let window = await chrome.windows.get(tab.windowId)
     console.log("Pop out", tab, window)
