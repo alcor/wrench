@@ -4,6 +4,8 @@ _Treasured multi-tool_ —
 _a spanner in Chrome's works_ —   
 _the missing menu._
 
+
+
 The Wrench Menu is a curated collection of features that complement and enhance Chrome, including basic tab and window controls and a set of additional keyboard shortcuts you can assign to other useful commands.
 
 Many of these are available in other extensions, but this extension aims to implement the most simple, lightweight versions (many are only a couple lines of code), with an eye towards low memory and energy usage. Also no tracking, spam, or advertising. 
