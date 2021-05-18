@@ -1,10 +1,8 @@
+## The Wrench Menu
+
 _Treasured multi-tool_ —  
 _a spanner in Chrome's works_ —   
 _the missing menu._
-
-<img width="640" alt="screenshot" src="https://user-images.githubusercontent.com/563095/118677153-e0e28200-b7b0-11eb-93ed-d058986ef904.png">
-
-## wrench-menu
 
 The Wrench Menu is a curated collection of features that complement and enhance Chrome, including basic tab and window controls and a set of additional keyboard shortcuts you can assign to other useful commands.
 
@@ -12,8 +10,10 @@ Many of these are available in other extensions, but this extension aims to impl
 
 Feedback and additions welcome! https://github.com/alcor/wrench-menu/issues
 
+<img width="640" alt="screenshot" src="https://user-images.githubusercontent.com/563095/118677153-e0e28200-b7b0-11eb-93ed-d058986ef904.png">
 
-A Chrome extension with a curated set of useful features in a familiar menu.
+
+## Usage
 
 - Open chrome://extensions
 - Turn on Developer mode
