@@ -153,7 +153,7 @@ let commandHandlers = {
     windows.forEach(w => {
       w.tabs.forEach(tab => {
         if (tab.groupId > 0 && !movedGroups.includes(tab.groupId)) {
-          chrome.tabGroups.move(tab.id,{windowId:firstWindow.id, index:-1})
+          chrome.tabGroups.move(tab.groupId,{windowId:firstWindow.id, index:-1})
           movedGroups.push(tab.groupId);
         } else {
           chrome.tabs.move(tab.id, {windowId:firstWindow.id, index:-1}).then(() => {

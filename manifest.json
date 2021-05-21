@@ -2,7 +2,7 @@
   "name": "The Wrench Menu",
   "short_name": "The Wrench Menu",
   "description": "Treasured multi-tool – a spanner in Chrome's works – the missing menu.        ",
-  "version": "1.0",
+  "version": "1.0.1",
   "icons": {
     "128": "rsrc/wrench.png",
     "32": "rsrc/wrench.png"
@@ -48,12 +48,14 @@
     "51-merge-windows": {
       "group":"Window", "order": 1,
       "description": "Merge Windows (⌘⇧M)                    ",
-      "icon": "padding"
+      "icon": "padding",
+      "contexts":["page"]
     },
     "53-remove-duplicates": {
       "group":"Window", "order": 2,
       "description": "Close Duplicate Tabs (⌘⇧W)                    ",
-      "icon": "tab_unselected"
+      "icon": "tab_unselected",
+      "contexts":["page"]
     },
     "55-discard-tabs": {
       "group":"Window", "order": 3,

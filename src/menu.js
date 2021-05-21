@@ -120,8 +120,8 @@ function runCommand(e) {
 }
 
 let commandHandlers = {
-  "pic-in-pic": pictureInPicture,
-  "copy-link": copyLink
+  "03-pic-in-pic": pictureInPicture,
+  "20-copy-link": copyLink
 }
 
 function sendMessage(command) {
