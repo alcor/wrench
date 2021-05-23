@@ -80,6 +80,16 @@ let commandHandlers = {
   },
 
   
+  "02-tab-to-window": async (tab) => {
+    let window = await chrome.windows.get(tab.windowId)
+    chrome.windows.create({
+      tabId: tab.id,
+      left:window.left, top:window.top, width:window.width , height:window.height,
+      type: "normal"
+    });
+    //TODO: record the window the tab came from originally 
+  },
+  
   "03-pic-in-pic": async (tab) => {
     chrome.scripting.executeScript({
       files: ['./src/inject_pictureInPicture.js'],
@@ -145,25 +155,7 @@ let commandHandlers = {
     })  
   },
 
-  "51-merge-windows": async function mergeWindows() {
-    let windows = await chrome.windows.getAll({populate:true, windowTypes:['normal']});
-    windows.sort(sortWindows);
-    let firstWindow = windows.shift();
-    let movedGroups = [];
-    windows.forEach(w => {
-      w.tabs.forEach(tab => {
-        if (tab.groupId > 0 && !movedGroups.includes(tab.groupId)) {
-          chrome.tabGroups.move(tab.groupId,{windowId:firstWindow.id, index:-1})
-          movedGroups.push(tab.groupId);
-        } else {
-          chrome.tabs.move(tab.id, {windowId:firstWindow.id, index:-1}).then(() => {
-            if (tab.pinned) chrome.tabs.update(tab.id, { pinned: true }) 
-          });
-        }
-      })  
-    })
-    showSuccess();
-  },
+  "51-merge-windows": mergeWindows,
 
   "55-discard-tabs": async () => {
     let windows = await chrome.windows.getAll({populate:true, windowTypes:['normal']});
@@ -174,6 +166,50 @@ let commandHandlers = {
     })
     showSuccess();
   }
+}
+
+async function mergeWindows() {
+  let activeTab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
+  let windows = await chrome.windows.getAll({populate:true, windowTypes:['normal']});
+  windows.sort(sortWindows);
+  let firstWindow = windows.shift();
+  let movedGroups = [];
+  for (var w of windows) {
+    for (var tab of w.tabs) {
+      if (tab.groupId > 0 && !movedGroups.includes(tab.groupId)) {
+        await chrome.tabGroups.move(tab.groupId,{windowId:firstWindow.id, index:-1})
+        movedGroups.push(tab.groupId);
+      } else {
+        await chrome.tabs.move(tab.id, {windowId:firstWindow.id, index:-1})
+        //.then(() => {
+          if (tab.pinned) chrome.tabs.update(tab.id, { pinned: true }) 
+        //});
+      }
+    }
+  }
+
+  // Dedupe groups
+  let groupsArray = await chrome.tabGroups.query({});
+  var groups = groupsArray.reduce((map, obj) => {
+    map[obj.id] = obj;
+    return map;
+  }, {});
+
+  let tabs = await chrome.tabs.query({windowId:firstWindow.id});
+  let groupTitles = {}
+  for (var tab of tabs) {
+    if (tab.groupId == -1) continue;
+    let group = groups[tab.groupId];
+    let newGroup = groupTitles[group.title]
+    if (newGroup) {
+      await chrome.tabs.group({groupId:newGroup, tabIds:tab.id});
+    } else if (group.title.length) {
+      groupTitles[group.title] = group.id;
+    }
+  }
+
+  chrome.tabs.update(activeTab.id, { 'active': true });
+  showSuccess();
 }
 
 async function runCommand(command, tab) {
