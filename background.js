@@ -120,7 +120,7 @@ let commandHandlers = {
     // TODO: Reactivate last used tabbed window
     chrome.tabs.create({
       index: tab.index + 1
-    }).then((tab) => {
+    }).then((tab) => { 
       if (tab.groupId > 0) chrome.tabs.group({groupId: tab.groupId, tabIds: tab.id})
     });
   },
@@ -132,9 +132,11 @@ let commandHandlers = {
       var knownURLs = {};
       windows.forEach(w => {
         w.tabs.forEach((tab) => {
-          if (!knownURLs[tab.url]) {
-            knownURLs[tab.url] = tab.id;
-          } else {
+          let url = tab.url;
+          let priorTab = knownURLs[url];
+          if (!priorTab) {
+            knownURLs[url] = tab;
+          } else if (tab.groupId == -1) {
             idsToRemove.push(tab.id)         
           }
         })

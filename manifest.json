@@ -14,7 +14,11 @@
     "default_popup": "src/menu.html"
   },
   "commands": {
-    "01-pin-tab": { "description": "Pin Tab            (⌘⇧P)                    " },
+    "01-pin-tab": {
+      "description": "Pin Tab            (⌘⇧P)                    ",
+      "group":"Shortcuts", "order": 1, "hidden":true,
+      "icon": "push_pin"      
+    },
     "02-pop-out-tab": { 
       "description": "Move Tab to Pop-up (⌥⇧P)                    ",
       "group":"Tab", "order": 1,
@@ -25,14 +29,14 @@
      },
      "02-tab-to-window": { 
       "description": "Move Tab to New Window (⌥⇧P)                    ",
-      "group":"Tab", "order": 1,
+      "group":"Tab", "order": 1, "hidden":true,
       "icon": "tab" , 
       "suggested_key": { "default": "Alt+Shift+P" }, 
       "contexts":["page", "selection"],
       "enabled": ["tab"]
      },
     "03-pic-in-pic": {
-       "description": "Pop Video Out (⌥P)                    ",
+       "description": "Picture in Picture Video (⌥P)                    ",
        "group":"Tab", "order": 2,
        "icon": "picture_in_picture_alt" , 
        "suggested_key": { "default": "Alt+P"}, 
@@ -44,18 +48,18 @@
        "contexts":["page", "selection"]
       },
     "12-previous-tab": {
-        "group":"Tab", "order": 4,
+        "group":"Shortcuts", "order": 4, "hidden":true,
         "description": "Switch to Prior Tab (⌘E)                    ",
         "icon": "undo" 
       },
     "13-new-tab-right": {
-      "group":"Tab", "order": 5,
+      "group":"Shortcuts", "order": 5, "hidden":true,
        "description": "New Tab After This One (⌘T)                    ",
        "icon": "add_circle_outline"
       },
     "51-merge-windows": {
       "group":"Window", "order": 1,
-      "description": "Merge Windows (⌘⇧M)                    ",
+      "description": "Merge All Windows (⌘⇧M)                    ",
       "icon": "dynamic_feed",
       "contexts":["page"]
     },
@@ -67,12 +71,17 @@
     },
     "55-discard-tabs": {
       "group":"Window", "order": 3,
-      "description": "Unload Background Tabs (⌘⇧U)                    ",
+      "description": "Unload Other Tabs (⌘⇧U)                    ",
       "icon": "cloud_off"
     },
-    "90-close-downloads": { "description": "Close Downloads Bar (⌘⇧D)                    " },
+    "90-close-downloads": {
+      "description": "Close Downloads Bar (⌘⇧D)                    ",
+      "group":"Shortcuts", "order": 4, "hidden":true,
+      "icon": "download"
 
-    "_execute_action": {"description": "Test", "suggested_key": { "default": "Alt+W", "mac": "Alt+W"}}
+    },
+
+    "_execute_action": {"suggested_key": { "default": "Alt+W", "mac": "Alt+W"}}
   },
   "permissions":[ "scripting", "tabs", "activeTab", "tabGroups", "storage", "contextMenus" ],
   "optional_permissions": ["downloads", "downloads.shelf"],

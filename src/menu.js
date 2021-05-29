@@ -1,6 +1,16 @@
 let manifest = chrome.runtime.getManifest();
 let commands = manifest.commands;
+let editMode = false;
 let commandsArray = [];
+let settings = {}
+let storage = chrome.storage.sync;
+
+storage.get('settings', result => { console.log("result", result); settings = result.settings})
+
+function writeSettings () {
+  storage.set({settings});
+}
+
 loadCommands();
 
 let darkmode = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -13,17 +23,19 @@ if (darkmode) {
 }
 
 function loadCommands() {
+  let groupOrder = ["Tab", "Window", "Shortcuts"];
 
   for (let cmd in commands) {
     let attrs = commands[cmd];
     attrs.name = cmd;
+    attrs.groupIndex = groupOrder.indexOf(attrs.group)
     if (attrs.description)
       attrs.description = attrs.description.split(" (")[0];
-    if (!attrs.group) continue;
+    //if (!attrs.group) continue;
     commandsArray.push(attrs);
   }
   commandsArray.sort((a,b) => {
-    let order =  a.group ? a.group.localeCompare(b.group) : 1;
+    let order =  a.groupIndex - b.groupIndex;
     if (!order) order = a.order - b.order;
     return order; 
   })
@@ -55,6 +67,12 @@ function openShortcutsUI() {
 }
 
 var MenuItem = function(vnode) {
+  async function toggleEnabled(enabled, e) {
+    e.preventDefault();
+    e.stopPropagation();
+    settings[this.name] = !enabled;
+    writeSettings();
+  }
   return {
     view: function(vnode) {
       let item = vnode.attrs;
@@ -64,10 +82,14 @@ var MenuItem = function(vnode) {
       if (item.type == 'header') return m('div.header', item.description);
       if (!item.description) return;
       if (item.onclick) attrs.onclick = item.onclick;
+      let enabled = settings[item.name] ?? !item.hidden;
+      if (!enabled && !editMode) return;
+      if (enabled) attrs.class = "enabled"
       return m('div.item', attrs,
+        (editMode && !item.permanent) ? m('span.icon.checkbox.material-icons', {onclick: toggleEnabled.bind(item, enabled)}, enabled ? "check_box" : "check_box_outline_blank") : null, 
         m('span.icon.material-icons',item.icon), 
         m('span.title', title),
-        item.shortcut ? m('span.shortcut', {onclick:openShortcutsUI.bind(title)}, item.shortcut) : m('span.shortcut.placeholder', {onclick:openShortcutsUI.bind(title)}, "+")
+        item.permanent ? null : item.shortcut ? m('span.shortcut', {onclick:openShortcutsUI.bind(title)}, item.shortcut) : m('span.shortcut.placeholder.material-icons', {onclick:openShortcutsUI.bind(title)}, "add")
       )
     }
   }
@@ -81,6 +103,9 @@ var Menu = function(vnode) {
         for (let cmd in commandsArray) {
           let attrs = commandsArray[cmd];
           if (!attrs.description) continue;
+
+          let enabled = settings[attrs.name] ?? !attrs.hidden;
+          if (!enabled && !editMode) continue;
           if (lastGroup != attrs.group) {
             if (lastGroup) menuItems.push(m(MenuItem, {type:"separator", description:lastGroup}))
             lastGroup = attrs.group
@@ -92,12 +117,20 @@ var Menu = function(vnode) {
           }
           menuItems.push(m(MenuItem, attrs))
         }
-
+        let attrs = {}
+        if (editMode) attrs.class = "edit";
         menuItems.push(m('hr'))
-        menuItems.push(m(MenuItem, {description:"More keyboard shortcuts...",  icon:'keyboard', onclick:openShortcutsUI.bind("The Wrench Menu")}))
-        return m("div.menu#contextmenu", menuItems);
+        menuItems.push(m(MenuItem, {permanent:true, description:"Keyboard shortcuts...",  icon:'keyboard', onclick:openShortcutsUI.bind("The Wrench Menu")}))
+        menuItems.push(m(MenuItem, {permanent:true, description: editMode ? "Done" : "Customize...",  icon:'settings', onclick:toggleEditMode}))
+        return m("div.menu#contextmenu", attrs,  menuItems);
     }
   }
+}
+
+
+function toggleEditMode () {
+  editMode = !editMode;
+  m.redraw;
 }
 
 function runCommand(e) {

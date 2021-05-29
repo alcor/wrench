@@ -40,7 +40,6 @@ body {
   padding: 8px 0;
   min-width: 280px;
   font-size:13px;
-
 }
 
 .button .menu {
@@ -56,6 +55,14 @@ body {
   padding:0 16px 0 24px;
 }
 
+.menu.edit .item {
+  padding:0 16px 0 40px;
+}
+
+.menu .item:not(.enabled):not(:hover) {
+  opacity:0.54;
+}
+
 .menu .item .icon {
   margin-right:14px;
   font-size:18px;
@@ -64,9 +71,21 @@ body {
   vertical-align: bottom;
 }
 
+.menu .item .checkbox {
+  font-size:18px;
+  float:left;
+  margin-left:-24px;
+  width:24px;
+  margin-right:8px;
+}
+
 .menu .header {
   opacity:0.5;
   padding-left:24px;
+}
+
+.menu.edit .header {
+  padding-left:48px;
 }
 
 .menu .item .title {
@@ -76,9 +95,29 @@ body {
 .shortcut {
   float:right;
   opacity:0.33;
+  cursor:pointer;
+  padding:0 4px 0 4px;
+  margin:2px -4px 2px -4px;
+  border-radius:4px;
+  line-height:24px;
 }
 
-.item:not(:hover) .shortcut.placeholder {
+.shortcut.placeholder {
+  font-size:18px;
+  line-height:24px;
+}
+
+.shortcut:hover {
+  background: var(--text-color);
+  color:var(--surface-color);
+}
+
+.shortcut:active {
+  background-color:var(--surface-color);
+  color:var(--text-color);
+}
+
+.menu:not(.edit) .item:not(:hover) .shortcut.placeholder {
   opacity:0.0;
 }
 
@@ -124,7 +163,7 @@ hr {
 }
 
 * {
-  --surface-color: #white;
+  --surface-color: white;
   --surface-stroke-color: rgba(0,0,0,0.1);
   --text-color: black;
   --item-highlighted-color: #C8C8C9;
