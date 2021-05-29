@@ -84,6 +84,7 @@ var MenuItem = function(vnode) {
       if (item.onclick) attrs.onclick = item.onclick;
       let enabled = settings[item.name] ?? !item.hidden;
       if (!enabled && !editMode) return;
+      if (focusedTabs.length > 1 && item.plural_description) title = item.plural_description;
       if (enabled) attrs.class = "enabled"
       return m('div.item', attrs,
         (editMode && !item.permanent) ? m('span.icon.checkbox.material-icons', {onclick: toggleEnabled.bind(item, enabled)}, enabled ? "check_box" : "check_box_outline_blank") : null, 
@@ -111,7 +112,11 @@ var Menu = function(vnode) {
             lastGroup = attrs.group
             let header = lastGroup;
             if (header == "Tab") {
-              if (focusedTabs.length > 1) header = focusedTabs.length + " Tabs"
+              if (focusedTabs.length > 1) {
+                header = focusedTabs.length + " Tabs"
+              } else {
+                header += " - " + focusedTabs[0].title
+              }
             }
             menuItems.push(m(MenuItem, {type:"header", description:header}))
           }
@@ -172,17 +177,23 @@ async function pictureInPicture(target) {
 }
 
 async function copyLink() {
-  let tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
-  copyRichLink(tab.title, tab.url)
+  let tabs = await chrome.tabs.query({highlighted: true, currentWindow: true});
+  let textLines = [];
+  let htmlLines = [];
+
+  tabs.forEach(tab => {
+    textLines.push(`${tab.title} \n${tab.url}`);
+    htmlLines.push(`<a href="${tab.url}">${tab.title}</a>`);
+  })
+
+  copyRichText(textLines.join("\n \n"), htmlLines.join("<br>"));
 }
 
-async function copyRichLink(title, url) {
+async function copyRichText(text, html) {
   try {
-    const text = new Blob([`${title} \n${url}`], {type: 'text/plain'});
-    const html = new Blob([`<a href="${url}">${title}</a>`], {type: 'text/html'});
     const item = new ClipboardItem({
-      'text/plain': text,
-      'text/html': html
+      'text/plain': new Blob([text], {type: 'text/plain'}),
+      'text/html': new Blob([html], {type: 'text/html'})
     });
     await navigator.clipboard.write([item]);
     console.log('Copied to clipboard', title, url);

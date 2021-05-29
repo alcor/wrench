@@ -16,11 +16,13 @@
   "commands": {
     "01-pin-tab": {
       "description": "Pin Tab            (⌘⇧P)                    ",
+      "plural_description": "Pin Tabs",
       "group":"Shortcuts", "order": 1, "hidden":true,
       "icon": "push_pin"      
     },
     "02-pop-out-tab": { 
       "description": "Move Tab to Pop-up (⌥⇧P)                    ",
+      "plural_description": "Move Tabs to Pop-ups",
       "group":"Tab", "order": 1,
       "icon": "web_asset" , 
       "suggested_key": { "default": "Alt+Shift+P" }, 
@@ -29,6 +31,8 @@
      },
      "02-tab-to-window": { 
       "description": "Move Tab to New Window (⌥⇧P)                    ",
+      "plural_description": "Move Tabs to New Window",
+
       "group":"Tab", "order": 1, "hidden":true,
       "icon": "tab" , 
       "suggested_key": { "default": "Alt+Shift+P" }, 
@@ -43,6 +47,7 @@
        "contexts":["page", "selection"]},
     "20-copy-link": {
        "description": "Copy Title with Link (⌥⇧C)                    ", 
+       "plural_description": "Copy Titles with Links",
        "icon": "link",
        "group":"Tab", "order": 9,
        "contexts":["page", "selection"]
