@@ -173,15 +173,19 @@ async function pictureInPicture(target) {
 
 async function copyLink() {
   let tab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
+  copyRichLink(tab.title, tab.url)
+}
+
+async function copyRichLink(title, url) {
   try {
-    const text = new Blob([`${tab.title}\n${tab.url}`], {type: 'text/plain'});
-    const html = new Blob([`<a href="${tab.url}">${tab.title}</a>`], {type: 'text/html'});
+    const text = new Blob([`${title} \n${url}`], {type: 'text/plain'});
+    const html = new Blob([`<a href="${url}">${title}</a>`], {type: 'text/html'});
     const item = new ClipboardItem({
       'text/plain': text,
       'text/html': html
     });
     await navigator.clipboard.write([item]);
-    console.log('Page URL copied to clipboard');
+    console.log('Copied to clipboard', title, url);
   } catch (err) {
     console.error('Failed to copy: ', err);
   }
