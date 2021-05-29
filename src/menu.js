@@ -5,7 +5,7 @@ let commandsArray = [];
 let settings = {}
 let storage = chrome.storage.sync;
 
-storage.get('settings', result => { console.log("result", result); settings = result.settings})
+storage.get('settings', result => { console.log("result", result); settings = result.settings ?? {}})
 
 function writeSettings () {
   storage.set({settings});

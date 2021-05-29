@@ -35,7 +35,6 @@
 
       "group":"Tab", "order": 1, "hidden":true,
       "icon": "tab" , 
-      "suggested_key": { "default": "Alt+Shift+P" }, 
       "contexts":["page", "selection"],
       "enabled": ["tab"]
      },
@@ -49,6 +48,7 @@
     "20-copy-link": {
        "description": "Copy Title with Link (⌥⇧C)                    ", 
        "plural_description": "Copy Titles with Links",
+       "suggested_key": { "default": "Alt+Shift+C"}, 
        "icon": "link",
        "group":"Tab", "order": 0,
        "contexts":["page", "selection"]
