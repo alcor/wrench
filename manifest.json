@@ -2,7 +2,7 @@
   "name": "A Wrench Menu",
   "short_name": "A Wrench Menu",
   "description": "Treasured multi-tool – a spanner within Chrome's works – the missing menu.        ",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "icons": { 
     "128": "rsrc/wrench.png",
     "32": "rsrc/wrench.png"
@@ -45,11 +45,12 @@
        "icon": "picture_in_picture_alt" , 
        "suggested_key": { "default": "Alt+P"}, 
        "contexts":["page", "selection"]},
+
     "20-copy-link": {
        "description": "Copy Title with Link (⌥⇧C)                    ", 
        "plural_description": "Copy Titles with Links",
        "icon": "link",
-       "group":"Tab", "order": 9,
+       "group":"Tab", "order": 0,
        "contexts":["page", "selection"]
       },
     "12-previous-tab": {
