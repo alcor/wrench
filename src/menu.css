@@ -75,9 +75,9 @@ body {
 .menu .item .checkbox {
   font-size:18px;
   float:left;
-  margin-left:-24px;
+  margin-left:-28px;
   width:24px;
-  margin-right:8px;
+  margin-right:0px;
 }
 
 .menu .header {
@@ -89,7 +89,7 @@ body {
 }
 
 .menu.edit .header {
-  padding-left:48px;
+  padding-left:40px;
 }
 
 .menu .item .title {

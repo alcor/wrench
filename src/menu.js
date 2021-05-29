@@ -126,7 +126,10 @@ var Menu = function(vnode) {
         if (editMode) attrs.class = "edit";
         menuItems.push(m('hr'))
         menuItems.push(m(MenuItem, {permanent:true, description:"Keyboard shortcuts...",  icon:'keyboard', onclick:openShortcutsUI.bind("The Wrench Menu")}))
-        menuItems.push(m(MenuItem, {permanent:true, description: editMode ? "Done" : "Customize...",  icon:'settings', onclick:toggleEditMode}))
+        menuItems.push(m(MenuItem, {permanent:true, 
+          description: editMode ? "Hide Unchecked Commands" : "Show All Commands", 
+           icon: editMode ? 'keyboard_arrow_up' : 'keyboard_arrow_down', 
+           onclick:toggleEditMode}))
         return m("div.menu#contextmenu", attrs,  menuItems);
     }
   }
