@@ -54,6 +54,7 @@ body {
   text-align:left;
   cursor:default;
   padding:0 16px 0 24px;
+  display:flex;
 }
 
 .menu.edit .item {
@@ -67,7 +68,7 @@ body {
 .menu .item .icon {
   margin-right:14px;
   font-size:18px;
-  line-height:28px;
+  line-height:26px;
   opacity:0.7;
   vertical-align: bottom;
 }
@@ -92,12 +93,15 @@ body {
   padding-left:40px;
 }
 
+.menu .header .subtitle {
+  opacity:0.5;
+}
 .menu .item .title {
-  line-height:28px;
+  line-height:26px;
+  flex:1 1 auto;
 }
 
 .shortcut {
-  float:right;
   opacity:0.33;
   cursor:pointer;
   padding:0 4px 0 4px;
@@ -131,8 +135,8 @@ body {
 
 .menu > div {
   text-overflow: ellipsis;
-  height:28px;
-  line-height:28px;
+  height:26px;
+  line-height:26px;
 }
 
 .menu > div.disabled {
@@ -170,7 +174,7 @@ hr {
   --surface-color: white;
   --surface-stroke-color: rgba(0,0,0,0.1);
   --text-color: black;
-  --item-highlighted-color: #C8C8C9;
+  --item-highlighted-color: #E8E8E9;
 }
 
 @media (prefers-color-scheme: dark) {

@@ -2,7 +2,7 @@
   "name": "A Wrench Menu",
   "short_name": "A Wrench Menu",
   "description": "Treasured multi-tool – a spanner within Chrome's works – the missing menu.        ",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "icons": { 
     "128": "rsrc/wrench.png",
     "32": "rsrc/wrench.png"
@@ -15,81 +15,110 @@
   },
   "commands": {
     "01-pin-tab": {
-      "description": "Pin Tab            (⌘⇧P)                    ",
       "plural_description": "Pin Tabs",
       "group":"Shortcuts", "order": 1, "hidden":true,
-      "icon": "push_pin"      
+      "icon": "push_pin",
+      "action": "pinTab",
+      "description": "Pin Tab            (⌘⇧P)                    "
     },
     "02-pop-out-tab": { 
-      "description": "Move Tab to Pop-up (⌥⇧P)                    ",
       "plural_description": "Move Tabs to Pop-ups",
       "group":"Tab", "order": 1,
       "icon": "web_asset" , 
+      "action": "moveTabToPopUp",
       "suggested_key": { "default": "Alt+Shift+P" }, 
       "contexts":["page", "selection"],
-      "enabled": ["tab"]
+      "enabled": ["tab"],
+      "description": "Move Tab to Pop-up (⌥⇧P)                    "
      },
      "02-tab-to-window": { 
-      "description": "Move Tab to New Window (⌥⇧P)                    ",
-      "plural_description": "Move Tabs to New Window",
-
-      "group":"Tab", "order": 1, "hidden":true,
-      "icon": "tab" , 
-      "contexts":["page", "selection"],
-      "enabled": ["tab"]
+       "plural_description": "Move Tabs to New Window",
+       "group":"Tab", "order": 1, "hidden":true,
+       "icon": "tab",
+       "action": "moveTabToOwnWindow",
+       "contexts":["page", "selection"],
+       "enabled": ["tab"],
+       "description": "Move Tab to New Window (⌥⇧P)                    "
      },
     "03-pic-in-pic": {
-       "description": "Picture in Picture Video (⌥P)                    ",
-       "group":"Tab", "order": 2,
-       "icon": "picture_in_picture_alt" , 
-       "suggested_key": { "default": "Alt+P"}, 
-       "contexts":["page", "selection"]},
-
+      "group":"Tab", "order": 2,
+      "icon": "picture_in_picture_alt",
+      "action": "pictureInPicture",
+      "suggested_key": { "default": "Alt+P"}, 
+      "contexts":["page", "selection"],
+      "description": "Picture in Picture Video (⌥P)                    "
+    },
     "20-copy-link": {
-       "description": "Copy Title with Link (⌥⇧C)                    ", 
-       "plural_description": "Copy Titles with Links",
-       "suggested_key": { "default": "Alt+Shift+C"}, 
-       "icon": "link",
-       "group":"Tab", "order": 0,
-       "contexts":["page", "selection"]
-      },
+      "suggested_key": { "default": "Alt+Shift+C"}, 
+      "icon": "link",
+      "action": "copyLink",
+      "group":"Tab", "order": 0,
+      "contexts":["page", "selection"],
+      "plural_description": "Copy Titles with Links",
+      "description": "Copy Title with Link (⌥⇧C)                    "
+    },
     "12-previous-tab": {
         "group":"Shortcuts", "order": 4, "hidden":true,
-        "description": "Switch to Prior Tab (⌘E)                    ",
-        "icon": "undo" 
-      },
+        "icon": "undo",
+        "action": "switchToPreviousTab",
+        "description": "Switch to Prior Tab (⌘E)                    "
+    },
     "13-new-tab-right": {
       "group":"Shortcuts", "order": 5, "hidden":true,
-       "description": "New Tab After This One (⌘T)                    ",
-       "icon": "add_circle_outline"
-      },
+      "icon": "add_circle_outline",
+      "action": "newTabToTheRight",
+      "description": "New Tab After This One (⌘T)                    "
+    },
+    // "31-archive-group": {
+    //   "group":"Tab Group", "order": 1,
+    //   "icon": "save_alt",
+    //   "action": "archiveGroup",
+    //   "alt-contexts":["group"],
+    //   "description": "Archive Group to Bookmarks (⌘G)                    "
+    // },
+    // "32-group-related": {
+    //   "group":"Tab Group", "order": 2,  "hidden":true,
+    //   "icon": "folder_open",
+    //   "action": "groupRelatedTabs",
+    //   "description": "Group Tabs (⌘G)                    "
+    // },
+    "33-group-by-domain": {
+      "group":"Window", "order": 3, "hidden":true,
+      "icon": "sort",
+      "action": "groupTabsByDomain",
+      "description": "Group Tabs by Domain (⌘G)                    "
+    },
     "51-merge-windows": {
-      "group":"Window", "order": 1,
-      "description": "Merge All Windows (⌘⇧M)                    ",
       "icon": "dynamic_feed",
-      "contexts":["page"]
+      "action": "mergeWindows",
+      "contexts":["page"],
+      "group":"Window", "order": 1,
+      "description": "Merge All Windows (⌘⇧M)                    "
     },
     "53-remove-duplicates": {
-      "group":"Window", "order": 2,
-      "description": "Merge Duplicate Tabs (⌘⇧W)                    ",
       "icon": "merge_type",
-      "contexts":["page"]
+      "action": "removeDuplicateTabs",
+      "contexts":["page"],
+      "group":"Window", "order": 2,
+      "description": "Merge Duplicate Tabs (⌘⇧W)                    "
     },
     "55-discard-tabs": {
+      "icon": "cloud_off",
+      "action": "discardBackgroundTabs",
       "group":"Window", "order": 3,
-      "description": "Unload Other Tabs (⌘⇧U)                    ",
-      "icon": "cloud_off"
+      "description": "Unload Other Tabs (⌘⇧U)                    "
     },
     "90-close-downloads": {
-      "description": "Close Downloads Bar (⌘⇧D)                    ",
+      "icon": "download",
+      "action": "closeDownloadsBar",
       "group":"Shortcuts", "order": 4, "hidden":true,
-      "icon": "download"
-
+      "description": "Close Downloads Bar (⌘⇧D)                    "
     },
 
     "_execute_action": {"suggested_key": { "default": "Alt+W", "mac": "Alt+W"}}
   },
   "permissions":[ "scripting", "tabs", "activeTab", "tabGroups", "storage", "contextMenus" ],
   "optional_permissions": ["downloads", "downloads.shelf"],
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmYXFaUpDibFHS46O7O7LCrALdsEcmgmTOZomKen7v66LF4uaOI1Q+/yTv9KwfuH58vbFfnPzpLajBWZSx5V6lD3BJbRDxw3nRh72MGSr4faMT63qAFl/tNgSiW1Z3bnchLl+TNC1VaUyx9kLWRehqX5l2nY/FintmqA5HiNEiONh9zCuHLcVKC8yfL9TZpP5OmDBzBcKyh+xQYAmlI1DLeRIZOvBbXLHGoAdWckMC4WRe+10C2fVoyG2E1YoXgbaW98sozG8B4w+U7d2eHSlKrAVNwl0f5b2u7WGvBbikCtD1yZz1bz1s3otM6hnRcJMpa9R4942OblfhwPiHsNyswIDAQAB",
   "manifest_version": 3
 }

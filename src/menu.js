@@ -23,15 +23,15 @@ if (darkmode) {
 }
 
 function loadCommands() {
-  let groupOrder = ["Tab", "Window", "Shortcuts"];
+  let groupOrder = ["Tab", "Tab Group", "Window", "Shortcuts"];
 
   for (let cmd in commands) {
     let attrs = commands[cmd];
+    if (attrs.shortcut_only) continue;
     attrs.name = cmd;
     attrs.groupIndex = groupOrder.indexOf(attrs.group)
     if (attrs.description)
       attrs.description = attrs.description.split(" (")[0];
-    //if (!attrs.group) continue;
     commandsArray.push(attrs);
   }
   commandsArray.sort((a,b) => {
@@ -50,17 +50,21 @@ function loadCommands() {
 
 
 let focusedTabs;
-document.addEventListener('DOMContentLoaded', function() {
-  chrome.tabs.query({ highlighted: true, currentWindow: true }).then ( tabs => {
-    focusedTabs = tabs
-    console.log("Rendering menu for", tabs);
-    var root = document.body;
-    m.mount(root, Menu);
-  });
-  
+let focusedGroup;
+document.addEventListener('DOMContentLoaded', async function() {
+  let tabs = await chrome.tabs.query({ highlighted: true, currentWindow: true })
+
+  let groupId = tabs[0].groupId;
+  if (groupId > 0) focusedGroup = await chrome.tabGroups.get(groupId);
+  focusedTabs = tabs
+
+  console.log("Rendering menu for", tabs, focusedGroup);
+  var root = document.body;
+  m.mount(root, Menu);
+
 })
 
-
+console.log("this", this, self)
 
 function openShortcutsUI() {
   chrome.tabs.create({ url: "chrome://extensions/shortcuts#:~:text=" + encodeURIComponent(this)});
@@ -79,7 +83,10 @@ var MenuItem = function(vnode) {
       let attrs = {onclick:runCommand.bind(item)}
       let title = item.description ?? item.title;
       if (item.type == 'separator') return m('hr')
-      if (item.type == 'header') return m('div.header', item.description);
+      if (item.type == 'header') return m('div.header',
+        item.description,
+        item.subtitle ? m('span.subtitle', item.subtitle) : null
+        );
       if (!item.description) return;
       if (item.onclick) attrs.onclick = item.onclick;
       let enabled = settings[item.name] ?? !item.hidden;
@@ -111,14 +118,18 @@ var Menu = function(vnode) {
             if (lastGroup) menuItems.push(m(MenuItem, {type:"separator", description:lastGroup}))
             lastGroup = attrs.group
             let header = lastGroup;
+            let subtitle;
             if (header == "Tab") {
               if (focusedTabs.length > 1) {
                 header = focusedTabs.length + " Tabs"
               } else {
-                header += " - " + focusedTabs[0].title
+                subtitle = " - " + focusedTabs[0].title
               }
             }
-            menuItems.push(m(MenuItem, {type:"header", description:header}))
+            if ((header == "Tab Group") && focusedGroup) {
+                subtitle = " - " + focusedGroup.title
+            }
+            menuItems.push(m(MenuItem, {type:"header", description:header, subtitle}))
           }
           menuItems.push(m(MenuItem, attrs))
         }
@@ -127,7 +138,7 @@ var Menu = function(vnode) {
         menuItems.push(m('hr'))
         menuItems.push(m(MenuItem, {permanent:true, description:"Keyboard shortcuts...",  icon:'keyboard', onclick:openShortcutsUI.bind("The Wrench Menu")}))
         menuItems.push(m(MenuItem, {permanent:true, 
-          description: editMode ? "Hide Unchecked Commands" : "Show All Commands", 
+          description: editMode ? "Hide Unchecked Items" : "Show All Menu Items", 
            icon: editMode ? 'keyboard_arrow_up' : 'keyboard_arrow_down', 
            onclick:toggleEditMode}))
         return m("div.menu#contextmenu", attrs,  menuItems);
@@ -147,9 +158,10 @@ function runCommand(e) {
   setTimeout(() => {
     el.classList.remove("nohighlight");
     el.classList.add("highlight");
-    console.log("Run command:", this.name)
-    if (commandHandlers[this.name]) {
-      commandHandlers[this.name]()
+    console.log("Run command:", this, self, this.action, commandHandlers)
+
+    if (commandHandlers[this.action]) {
+      commandHandlers[this.action]()
     } else {
       sendMessage(this);
     }
@@ -161,8 +173,8 @@ function runCommand(e) {
 }
 
 let commandHandlers = {
-  "03-pic-in-pic": pictureInPicture,
-  "20-copy-link": copyLink
+  "pictureInPicture": pictureInPicture//,
+  //"copyLink": copyLink
 }
 
 function sendMessage(command) {
