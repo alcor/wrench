@@ -121,7 +121,7 @@ async function copyLink() {
 
   let tabs = await chrome.tabs.query({highlighted: true, currentWindow: true});
   if (!tabs.length) return;
-  
+
   let textLines = [];
   let htmlLines = [];
   let win = await chrome.windows.get(tabs[0].windowId);
@@ -172,19 +172,30 @@ async function removeDuplicateTabs(tab) {
   var idsToRemove = []
   var knownURLs = {};
   for (let w of windows) {
+    let activeTab = w.tabs.filter(t => t.active).pop()
     for (let tab of w.tabs){
+      await chrome.tabs.highlight({tabs:[activeTab.index, tab.index], windowId:w.id});
+      await sleep(10);
       let url = tab.url;
       let priorTab = knownURLs[url];
-      if (!priorTab) {
+      let notInGroup = tab.groupId == -1;
+      let sameGroupAsPrior = priorTab ? priorTab.groupId == tab.groupId : false;
+      if (!priorTab || tab.active) {
         knownURLs[url] = tab;
-      } else if (tab.groupId == -1) {
+        if (priorTab && sameGroupAsPrior) {
+          idsToRemove.push(priorTab.id)
+        }
+      } else if (notInGroup || sameGroupAsPrior) {
         idsToRemove.push(tab.id)         
       }
     }
+    await chrome.tabs.highlight({tabs:activeTab.index, windowId:w.id});
   }
   await chrome.tabs.remove(idsToRemove.reverse());
   showSuccess();
 }
+
+
 
 async function switchToPreviousTab() {
   let storage = chrome.storage.session || chrome.storage.local
@@ -196,14 +207,23 @@ async function switchToPreviousTab() {
     }
   })  
 }
+function sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms)); }
 
 async function discardBackgroundTabs() {
   let windows = await chrome.windows.getAll({populate:true, windowTypes:['normal']});
-  windows.forEach(w => {
-    w.tabs.forEach(tab => {
-      if (!tab.active && !tab.discarded) chrome.tabs.discard(tab.id)
-    })  
-  })
+  for (w of windows) {
+    let activeTab = w.tabs.filter(t => t.active).pop()
+    for (tab of w.tabs) {
+      await chrome.tabs.highlight({tabs:[activeTab.index, tab.index], windowId:w.id});
+      if (!tab.active && !tab.discarded) {
+        await chrome.tabs.discard(tab.id)
+        await sleep(40);
+      } else {
+        await sleep(10);
+      }
+    }
+    await chrome.tabs.highlight({tabs:activeTab.index, windowId:w.id});
+  }
   showSuccess();
 }
 
