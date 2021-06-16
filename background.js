@@ -120,9 +120,11 @@ async function pictureInPicture(tab) {
 async function copyLink() {
 
   let tabs = await chrome.tabs.query({highlighted: true, currentWindow: true});
+  if (!tabs.length) return;
+  
   let textLines = [];
   let htmlLines = [];
-  let window = await chrome.windows.get(tabs[0].windowId);
+  let win = await chrome.windows.get(tabs[0].windowId);
 
 
   tabs.forEach(tab => {
@@ -138,11 +140,12 @@ async function copyLink() {
   console.log("data", data)
   const COPY_WINDOW_WIDTH = 320;
   const params = new URLSearchParams(data);
-  chrome.windows.create({
+  let createData = {
     url: chrome.runtime.getURL("src/copy.html") + "?" + params.toString(),
-    left:window.left + window.width/2 - COPY_WINDOW_WIDTH / 2 , top:window.top + 52, width:COPY_WINDOW_WIDTH , height:72 + 30 * tabs.length,
+    left: Math.floor(win.left + win.width/2 - COPY_WINDOW_WIDTH / 2) , top:win.top + 52, width:COPY_WINDOW_WIDTH , height:72 + 30 * tabs.length,
     type: "popup"
-  });
+  }
+  chrome.windows.create(createData);
 }
 
 async function closeDownloadsBar() {
