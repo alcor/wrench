@@ -103,7 +103,7 @@
       "description": "Merge Duplicate Tabs (⌘⇧W)                    "
     },
     "55-discard-tabs": {
-      "icon": "web_asset_off",
+      "icon": "cloud_off",
       "action": "discardBackgroundTabs",
       "group":"Window", "order": 3,
       "description": "Sleep Background Tabs (⌘⇧U)                    "

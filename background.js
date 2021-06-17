@@ -142,7 +142,7 @@ async function copyLink() {
   const params = new URLSearchParams(data);
   let createData = {
     url: chrome.runtime.getURL("src/copy.html") + "?" + params.toString(),
-    left: Math.floor(win.left + win.width/2 - COPY_WINDOW_WIDTH / 2) , top:win.top + 52, width:COPY_WINDOW_WIDTH , height:72 + 30 * tabs.length,
+    left: Math.floor(win.left + win.width/2 - COPY_WINDOW_WIDTH / 2) , top:win.top + 52, width:COPY_WINDOW_WIDTH , height:72 + 48 * tabs.length,
     type: "popup"
   }
   chrome.windows.create(createData);
