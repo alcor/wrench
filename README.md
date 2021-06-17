@@ -5,7 +5,12 @@ _the missing menu._
 
 ---
 
-## The Wrench Menu
+### Installation: 
+- Get the latest version of [A Wrench Menu](https://chrome.google.com/webstore/detail/a-wrench-menu/npngmeachnajkiekngpdhmnhkcgieccf) from the Chrome Web Store
+
+
+## A Wrench Menu
+
 
 _The Wrench Menu_ is a curated collection of features that complement and enhance Chrome, including basic tab and window controls and a set of additional keyboard shortcuts you can assign to other useful commands.
 
