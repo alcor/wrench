@@ -24,7 +24,7 @@
     "02-pop-out-tab": { 
       "plural_description": "Move Tabs to Pop-ups",
       "group":"Tab", "order": 1,
-      "icon": "web_asset" , 
+      "icon": "open_in_new" , 
       "action": "moveTabToPopUp",
       "suggested_key": { "default": "Alt+Shift+P" }, 
       "contexts":["page", "selection"],
@@ -59,7 +59,7 @@
     },
     "12-previous-tab": {
         "group":"Shortcuts", "order": 4, "hidden":true,
-        "icon": "undo",
+        "icon": "switch_right",
         "action": "switchToPreviousTab",
         "description": "Switch to Prior Tab (⌘E)                    "
     },
@@ -83,8 +83,8 @@
     //   "description": "Group Tabs (⌘G)                    "
     // },
     "33-group-by-domain": {
-      "group":"Window", "order": 3, "hidden":true,
-      "icon": "sort",
+      "group":"Window", "order": 3,
+      "icon": "view_week",
       "action": "groupTabsByDomain",
       "description": "Group Tabs by Website (⌘G)                    "
     },
@@ -96,21 +96,21 @@
       "description": "Merge All Windows (⌘⇧M)                    "
     },
     "53-remove-duplicates": {
-      "icon": "merge_type",
+      "icon": "clear_all",
       "action": "removeDuplicateTabs",
       "contexts":["page"],
       "group":"Window", "order": 2,
-      "description": "Merge Duplicate Tabs (⌘⇧W)                    "
+      "description": "Clear Duplicate Tabs (⌘⇧W)                    "
     },
     "54-tab-cleanup": {
-      "icon": "photo_filter",
+      "icon": "merge_type",
       "action": "tabCleanup",
       "contexts":["page"],
       "group":"Window", "order": 0, "hidden":true,
       "description": "Merge and Group All (⌥⇧M)                    "
     },
     "55-discard-tabs": {
-      "icon": "cloud_off",
+      "icon": "nightlight",
       "action": "discardBackgroundTabs",
       "group":"Window", "order": 3,
       "description": "Sleep Background Tabs (⌘⇧U)                    "
