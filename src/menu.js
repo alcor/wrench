@@ -4,6 +4,8 @@ let editMode = false;
 let commandsArray = [];
 let settings = {}
 let storage = chrome.storage.sync;
+let focusedTabs;
+let focusedGroup;
 
 storage.get('settings', result => { console.log("result", result); settings = result.settings ?? {}})
 
@@ -48,15 +50,8 @@ function loadCommands() {
   })
 }
 
-
-let focusedTabs;
-let focusedGroup;
-let focusedText;
-function getSelectedText() { return document.getSelection().toString(); }
-
 document.addEventListener('DOMContentLoaded', async function() {
   let tabs = await chrome.tabs.query({ highlighted: true, currentWindow: true })
-
   let groupId = tabs[0].groupId;
   if (groupId > 0) focusedGroup = await chrome.tabGroups.get(groupId);
   focusedTabs = tabs
@@ -64,14 +59,14 @@ document.addEventListener('DOMContentLoaded', async function() {
   console.log("Rendering menu for", tabs, focusedGroup);
   var root = document.body;
   m.mount(root, Menu);
-
 })
-
-console.log("this", this, self)
 
 function openShortcutsUI() {
   chrome.tabs.create({ url: "chrome://extensions/shortcuts#:~:text=" + encodeURIComponent(this)});
 }
+
+
+// Mithril Classes
 
 var MenuItem = function(vnode) {
   async function toggleEnabled(enabled, e) {
@@ -150,9 +145,9 @@ var Menu = function(vnode) {
 }
 
 
-function toggleEditMode () {
-  editMode = !editMode;
-  m.redraw;
+let commandHandlers = {
+  "pictureInPicture": pictureInPicture,
+  "copyLink": copyLink
 }
 
 function runCommand(e) {
@@ -175,13 +170,14 @@ function runCommand(e) {
   },100)
 }
 
-let commandHandlers = {
-  "pictureInPicture": pictureInPicture,
-  "copyLink": copyLink
-}
 
 function sendMessage(command) {
   return chrome.runtime.sendMessage({command, tabs:focusedTabs});
+}
+
+function toggleEditMode () {
+  editMode = !editMode;
+  m.redraw;
 }
 
 // Commands
@@ -201,11 +197,7 @@ async function copyLink() {
 }
 
 
-
-
-
 // Duplicate functions from Background.js
-
 
 async function clipboardDataForTabs(tab) {
   let tabs = await chrome.tabs.query({highlighted: true, currentWindow: true});

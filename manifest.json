@@ -2,7 +2,7 @@
   "name": "A Wrench Menu",
   "short_name": "A Wrench Menu",
   "description": "Treasured multi-tool – a spanner within Chrome's works – the missing menu.        ",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "icons": { 
     "128": "rsrc/wrench.png",
     "32": "rsrc/wrench.png"
@@ -106,7 +106,7 @@
       "icon": "photo_filter",
       "action": "tabCleanup",
       "contexts":["page"],
-      "group":"Window", "order": 3, "hidden":true,
+      "group":"Window", "order": 0, "hidden":true,
       "description": "Merge and Group All (⌥⇧M)                    "
     },
     "55-discard-tabs": {

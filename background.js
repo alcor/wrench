@@ -9,7 +9,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return runCommand(message.command.name, message.tab, sendResponse)
 })
 
-
 // Context Menu
 
 function setup() {
@@ -33,8 +32,6 @@ function setup() {
 chrome.runtime.onInstalled.addListener(setup);
 chrome.runtime.onStartup.addListener(setup);
 
-
-
 // History Stack
 
 let storage = chrome.storage.session || chrome.storage.local
@@ -51,8 +48,9 @@ chrome.tabs.onActivated.addListener( async info => {
 
 function showSuccess() {
   chrome.action.setIcon({path: 'rsrc/checkmark_32.png'});
-  setTimeout(restoreIcon, 1000);
+  setTimeout(restoreIcon, 600);
 }
+
 function restoreIcon() {
   chrome.storage.local.get('darkmode', (value) => {
     chrome.action.setIcon({path: `rsrc/wrench${value.darkmode ? "-light" : ""}_32.png`})
@@ -167,7 +165,6 @@ async function copyDataToClipboard(data) {
     console.error('Failed to copy: ', err);
   }
 }
-
 
 async function closeDownloadsBar() {
   chrome.permissions.request({permissions: ['downloads', 'downloads.shelf']}, function(granted) {
@@ -444,9 +441,6 @@ async function archiveGroupToBookmarks(group) {
     }
   }
 
-  // let urlArray = group.tabs.map(tab => {return tab.url;})
-  // urlArray = encodeURIComponent(JSON.stringify(urlArray))
-  // return chrome.bookmarks.create({parentId: "1", title: fancyTitle, url:url})
   let promises = [];
   group.tabs.forEach(tab => {
     promises.push(chrome.bookmarks.create({parentId: folder.id, title: tab.title, url: tab.url}))
