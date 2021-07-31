@@ -51,6 +51,9 @@ function loadCommands() {
 
 let focusedTabs;
 let focusedGroup;
+let focusedText;
+function getSelectedText() { return document.getSelection().toString(); }
+
 document.addEventListener('DOMContentLoaded', async function() {
   let tabs = await chrome.tabs.query({ highlighted: true, currentWindow: true })
 
@@ -173,8 +176,8 @@ function runCommand(e) {
 }
 
 let commandHandlers = {
-  "pictureInPicture": pictureInPicture//,
-  //"copyLink": copyLink
+  "pictureInPicture": pictureInPicture,
+  "copyLink": copyLink
 }
 
 function sendMessage(command) {
@@ -192,26 +195,54 @@ async function pictureInPicture(target) {
 }
 
 async function copyLink() {
-  let tabs = await chrome.tabs.query({highlighted: true, currentWindow: true});
-  let textLines = [];
-  let htmlLines = [];
-
-  tabs.forEach(tab => {
-    textLines.push(`${tab.title} \n${tab.url}`);
-    htmlLines.push(`<a href="${tab.url}">${tab.title}</a>`);
-  })
-
-  copyRichText(textLines.join("\n \n"), htmlLines.join("<br>"));
+  let data = await clipboardDataForTabs()
+  if (data) await copyDataToClipboard(data);
+  chrome.runtime.sendMessage({success:true});
 }
 
-async function copyRichText(text, html) {
+
+
+
+
+// Duplicate functions from Background.js
+
+
+async function clipboardDataForTabs(tab) {
+  let tabs = await chrome.tabs.query({highlighted: true, currentWindow: true});
+  if (!tabs.length) return;
+
+  let textLines = [];
+  let htmlLines = [];
+  let selectedText;
+
+  if (tabs.length == 1) {
+    tab = tabs[0]
+    selectedText = (await chrome.scripting.executeScript({
+      target: {tabId: tab.id},
+      func: () => { return document.getSelection().toString(); }
+    })).shift().result;
+    if (!selectedText.length) selectedText = undefined;
+  }
+
+  tabs.forEach(tab => {
+    textLines.push(`${selectedText || tab.title} \n${tab.url}`);
+    htmlLines.push(`<a href="${tab.url}">${selectedText || tab.title}</a>`);
+  })
+
+  return {
+    text: textLines.join("\n \n"),
+    html: htmlLines.join("<br>")
+  }
+}
+
+async function copyDataToClipboard(data) {
+  console.log("Copying data to clipboard", data);
   try {
     const item = new ClipboardItem({
-      'text/plain': new Blob([text], {type: 'text/plain'}),
-      'text/html': new Blob([html], {type: 'text/html'})
+      'text/plain': new Blob([data.text], {type: 'text/plain'}),
+      'text/html': new Blob([data.html], {type: 'text/html'})
     });
-    await navigator.clipboard.write([item]);
-    console.log('Copied to clipboard', title, url);
+    navigator.clipboard.write([item]);
   } catch (err) {
     console.error('Failed to copy: ', err);
   }

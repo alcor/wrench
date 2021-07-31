@@ -86,7 +86,7 @@
       "group":"Window", "order": 3, "hidden":true,
       "icon": "sort",
       "action": "groupTabsByDomain",
-      "description": "Group Tabs by Domain (⌘G)                    "
+      "description": "Group Tabs by Website (⌘G)                    "
     },
     "51-merge-windows": {
       "icon": "dynamic_feed",
@@ -102,6 +102,13 @@
       "group":"Window", "order": 2,
       "description": "Merge Duplicate Tabs (⌘⇧W)                    "
     },
+    "54-tab-cleanup": {
+      "icon": "photo_filter",
+      "action": "tabCleanup",
+      "contexts":["page"],
+      "group":"Window", "order": 3, "hidden":true,
+      "description": "Merge and Group All (⌥⇧M)                    "
+    },
     "55-discard-tabs": {
       "icon": "cloud_off",
       "action": "discardBackgroundTabs",
@@ -114,7 +121,6 @@
       "group":"Shortcuts", "order": 4, "hidden":true,
       "description": "Close Downloads Bar (⌘⇧D)                    "
     },
-
     "_execute_action": {"suggested_key": { "default": "Alt+W", "mac": "Alt+W"}}
   },
   "permissions":[ "scripting", "tabs", "activeTab", "tabGroups", "storage", "contextMenus" ],

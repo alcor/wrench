@@ -5,6 +5,7 @@ chrome.contextMenus.onClicked.addListener((data, tab) =>  {
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.success) return showSuccess();
   return runCommand(message.command.name, message.tab, sendResponse)
 })
 
@@ -117,36 +118,56 @@ async function pictureInPicture(tab) {
   showSuccess();
 }
 
-async function copyLink() {
+async function copyLink(tab) {
+  let data = await clipboardDataForTabs(tab)
+  if (data) await chrome.scripting.executeScript({
+    target: {tabId: tab.id},
+    func: copyDataToClipboard,
+    args:[data]
+  });
+}
 
+async function clipboardDataForTabs(tab) {
   let tabs = await chrome.tabs.query({highlighted: true, currentWindow: true});
   if (!tabs.length) return;
 
   let textLines = [];
   let htmlLines = [];
-  let win = await chrome.windows.get(tabs[0].windowId);
+  let selectedText;
 
+  if (tabs.length == 1) {
+    tab = tabs[0]
+    selectedText = (await chrome.scripting.executeScript({
+      target: {tabId: tab.id},
+      func: () => { return document.getSelection().toString(); }
+    })).shift().result;
+    if (!selectedText.length) selectedText = undefined;
+  }
 
   tabs.forEach(tab => {
-    textLines.push(`${tab.title} \n${tab.url}`);
-    htmlLines.push(`<a href="${tab.url}">${tab.title}</a>`);
+    textLines.push(`${selectedText || tab.title} \n${tab.url}`);
+    htmlLines.push(`<a href="${tab.url}">${selectedText || tab.title}</a>`);
   })
 
-  let data = {
+  return {
     text: textLines.join("\n \n"),
     html: htmlLines.join("<br>")
   }
-  
-  console.log("data", data)
-  const COPY_WINDOW_WIDTH = 320;
-  const params = new URLSearchParams(data);
-  let createData = {
-    url: chrome.runtime.getURL("src/copy.html") + "?" + params.toString(),
-    left: Math.floor(win.left + win.width/2 - COPY_WINDOW_WIDTH / 2) , top:win.top + 52, width:COPY_WINDOW_WIDTH , height:72 + 48 * tabs.length,
-    type: "popup"
-  }
-  chrome.windows.create(createData);
 }
+
+async function copyDataToClipboard(data) {
+  console.log("Copying data to clipboard", data);
+  try {
+    const item = new ClipboardItem({
+      'text/plain': new Blob([data.text], {type: 'text/plain'}),
+      'text/html': new Blob([data.html], {type: 'text/html'})
+    });
+    navigator.clipboard.write([item]);
+  } catch (err) {
+    console.error('Failed to copy: ', err);
+  }
+}
+
 
 async function closeDownloadsBar() {
   chrome.permissions.request({permissions: ['downloads', 'downloads.shelf']}, function(granted) {
@@ -165,6 +186,12 @@ async function newTabToTheRight(tab) {
   }).then((tab) => { 
     if (tab.groupId > 0) chrome.tabs.group({groupId: tab.groupId, tabIds: tab.id})
   });
+}
+
+async function tabCleanup(tab) {
+  await mergeWindows(tab);
+  await removeDuplicateTabs(tab);
+  await groupTabsByDomain(tab);
 }
 
 async function removeDuplicateTabs(tab) {
@@ -239,7 +266,6 @@ async function groupRelatedTabs() {
 async function groupTabsByDomain() {
   sortTabs('domain');
 }
-
 
 async function mergeWindows() {
   let activeTab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
@@ -351,10 +377,16 @@ async function sortTabs(type, preserveGroups = true) {
           let components = cluster.split(".");
           if (components[0] == "www") components.shift();
           components.pop();
-          let name = components.reverse().join(" • ");
-
-          let group = await chrome.tabs.group({tabIds:tabIds, createProperties:{windowId:w.id}})
-          await chrome.tabGroups.update(group, {title: name})
+          let title = components.reverse().join(" • ");
+          
+          let existingGroup = (await chrome.tabGroups.query({title, windowId:w.id})).shift();
+          if (existingGroup) {
+            chrome.tabs.group({tabIds, groupId: existingGroup.id})
+            console.log ("Using existing group", existingGroup)
+          } else {
+            let group = await chrome.tabs.group({tabIds:tabIds, createProperties:{windowId:w.id}})
+            await chrome.tabGroups.update(group, {title})  
+          }
         } else {
           otherTabs.push(tabIds[0])
         }
