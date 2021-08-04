@@ -18,7 +18,7 @@ Many of these are available in other extensions, but this extension aims to impl
 
 Feedback and additions welcome! https://github.com/alcor/wrench-menu/issues
 
-<img width="640" alt="screenshot (1)" src="https://user-images.githubusercontent.com/563095/118678862-3cf9d600-b7b2-11eb-802e-62ea83f964db.png">
+<img width="640" alt="screenshot" src="https://user-images.githubusercontent.com/563095/128127158-cc9a44d4-7f5c-4cfd-b437-a102bf85079d.png">
 
 
 ## Usage
@@ -31,18 +31,19 @@ Feedback and additions welcome! https://github.com/alcor/wrench-menu/issues
 ## Features
 
 Tabs
+- Copy Link w/ Title
 - Pop Out Tab
 - Pop Out Video (Picture in Picture)
-- Copy Link w/ Title
-- Switch to Prior Tab
 
 Window
-- Merge Windows  
-- Close Duplicate Tabs  
-- Unload Background Tabs
+- Merge All Windows  
+- Clear Duplicate Tabs  
+- Group Tabs by Website
+- Sleep Background Tabs
 
 ## Additional Shortcuts
 These don't show in the menu, but you can set shortcuts for them. 
 - Pin Tab
-- New Tab to the Right
+- Switch to Prior Tab
 - Close Download Bar
+- New Tab After This One
