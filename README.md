@@ -16,7 +16,7 @@ _The Wrench Menu_ is a curated collection of features that complement and enhanc
 
 Many of these are available in other extensions, but this extension aims to implement the most simple, lightweight versions (many are only a couple lines of code), with an eye towards low memory and energy usage. Also no tracking, spam, or advertising. 
 
-Feedback and additions welcome! https://github.com/alcor/wrench-menu/issues
+Feedback and additions welcome! https://github.com/alcor/wrench/issues
 
 <img width="640" alt="screenshot" src="https://user-images.githubusercontent.com/563095/128127158-cc9a44d4-7f5c-4cfd-b437-a102bf85079d.png">
 
