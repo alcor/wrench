@@ -2,7 +2,7 @@
   "name": "A Wrench Menu",
   "short_name": "A Wrench Menu",
   "description": "Treasured multi-tool – a spanner within Chrome's works – the missing menu.        ",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "icons": { 
     "128": "rsrc/wrench.png",
     "32": "rsrc/wrench.png"
@@ -69,19 +69,6 @@
       "action": "newTabToTheRight",
       "description": "New Tab After This One (⌘T)                    "
     },
-    // "31-archive-group": {
-    //   "group":"Tab Group", "order": 1,
-    //   "icon": "save_alt",
-    //   "action": "archiveGroup",
-    //   "alt-contexts":["group"],
-    //   "description": "Archive Group to Bookmarks (⌘G)                    "
-    // },
-    // "32-group-related": {
-    //   "group":"Tab Group", "order": 2,  "hidden":true,
-    //   "icon": "folder_open",
-    //   "action": "groupRelatedTabs",
-    //   "description": "Group Tabs (⌘G)                    "
-    // },
     "33-group-by-domain": {
       "group":"Window", "order": 3,
       "icon": "view_week",
